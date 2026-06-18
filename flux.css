@@ -1,3 +1,35 @@
+/* ========================================
+   CUSTOM SCROLLBAR
+   ======================================== */
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0c0c14;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #7c3aed, #a855f7);
+  border-radius: 3px;
+  transition: background 0.2s;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #6d28d9, #9333ea);
+}
+
+::-webkit-scrollbar-corner {
+  background: #0c0c14;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #7c3aed #0c0c14;
+}
+
 [data-aos] {
   opacity: 0;
   transition-property: opacity, transform, filter;
