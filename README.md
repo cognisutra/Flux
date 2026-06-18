@@ -33,11 +33,17 @@ That's it. Flux auto-initializes on DOMContentLoaded.
 
 Copy `flux.css` and `flux.js` into your project.
 
-### CDN (coming soon)
+### CDN (jsDelivr)
 
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/cognisutra/Flux@latest/flux.min.css">
+<script src="https://cdn.jsdelivr.net/gh/cognisutra/Flux@latest/flux.min.js"></script>
 ```
-https://cdn.jsdelivr.net/gh/cognisutra/Flux/flux.min.css
-https://cdn.jsdelivr.net/gh/cognisutra/Flux/flux.min.js
+
+Or pin a specific version (recommended):
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/cognisutra/Flux@v1.0.0/flux.min.css">
+<script src="https://cdn.jsdelivr.net/gh/cognisutra/Flux@v1.0.0/flux.min.js"></script>
 ```
 
 ## Usage
