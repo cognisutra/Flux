@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Bar & Toolbar — Flux</title>
+  <link rel="stylesheet" href="../flux.css">
+  <style>
+    *, *::before, *::after {
+      margin: 0; padding: 0; box-sizing: border-box;
+    }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #07070a; color: #c8c8d0; line-height: 1.6; overflow-x: hidden;
+    }
+    ::selection { background: #7c3aed; color: #fff; }
+    .noise {
+      position: fixed; inset: 0; z-index: -1; opacity: 0.035; pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    }
+    header {
+      padding: 3rem 2rem 4rem; text-align: center; position: relative;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    header .back {
+      position: absolute; left: 2rem; top: 2rem; display: inline-flex; align-items: center; gap: 0.4rem;
+      color: #555; text-decoration: none; font-size: 0.85rem; transition: color 0.2s;
+    }
+    header .back:hover { color: #a78bfa; }
+    header h1 {
+      font-size: clamp(1.8rem, 4vw, 2.5rem); font-weight: 800; color: #fff; letter-spacing: -0.03em;
+    }
+    header h1 span { color: #7c3aed; }
+    header p { color: #555; margin-top: 0.5rem; font-size: 0.95rem; }
+    .controls {
+      max-width: 800px; margin: 2rem auto 0; display: flex; flex-direction: column; gap: 1rem;
+    }
+    .search-wrap { position: relative; }
+    .search-wrap input {
+      width: 100%; padding: 0.9rem 1.25rem 0.9rem 3rem; border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.03);
+      color: #e0e0e0; font-size: 0.95rem; font-family: inherit; outline: none; transition: border-color 0.2s;
+    }
+    .search-wrap input:focus { border-color: rgba(124,58,237,0.3); }
+    .search-wrap input::placeholder { color: #444; }
+    .search-wrap .search-icon {
+      position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: #444; font-size: 1.1rem; pointer-events: none;
+    }
+    .filter-row {
+      display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center;
+    }
+    .filter-btn {
+      padding: 0.5rem 1.2rem; border-radius: 100px; border: 1px solid rgba(255,255,255,0.08);
+      background: transparent; color: #666; font-size: 0.8rem; font-weight: 600; cursor: pointer;
+      transition: all 0.2s; font-family: inherit;
+    }
+    .filter-btn:hover { color: #a78bfa; border-color: rgba(124,58,237,0.2); }
+    .filter-btn.active { color: #fff; background: rgba(124,58,237,0.15); border-color: rgba(124,58,237,0.3); }
+    .counter { text-align: center; font-size: 0.8rem; color: #444; margin: 1.5rem 0 0; }
+    .counter span { color: #a78bfa; font-weight: 600; }
+    .grid {
+      max-width: 1280px; margin: 0 auto; padding: 2.5rem 2rem 4rem;
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1.25rem;
+    }
+    .grid.empty {
+      display: flex; align-items: center; justify-content: center; min-height: 200px; color: #444; font-size: 0.95rem;
+    }
+    .anim-card {
+      background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 14px; padding: 1.5rem 1.25rem; text-align: center; transition: all 0.3s;
+    }
+    .anim-card:hover { border-color: rgba(124,58,237,0.15); transform: translateY(-2px); }
+    .anim-card .preview-box {
+      width: 72px; height: 72px; border-radius: 12px; margin: 0 auto 1rem;
+      transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      will-change: transform, opacity, filter; backface-visibility: hidden;
+    }
+    .anim-card .preview-box.is-visible {
+      opacity: 1 !important; transform: none !important; filter: none !important;
+      clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%) !important;
+    }
+    .anim-card .name {
+      font-size: 0.78rem; font-weight: 600; color: #e0e0e0; margin-bottom: 0.2rem; word-break: break-word;
+    }
+    .anim-card .tag {
+      font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.55rem; color: #a78bfa;
+      background: rgba(124,58,237,0.08); display: inline-block; padding: 0.15rem 0.5rem; border-radius: 4px; margin-bottom: 0.85rem;
+    }
+    .anim-card .cat-tag {
+      font-size: 0.55rem; color: #555; display: block; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.06em;
+    }
+    .anim-card .play-sm {
+      padding: 0.4rem 1rem; border-radius: 100px; border: none; background: linear-gradient(135deg, #7c3aed, #a855f7);
+      color: #fff; font-size: 0.7rem; font-weight: 600; cursor: pointer; transition: all 0.3s; font-family: inherit;
+    }
+    .anim-card .play-sm:hover { box-shadow: 0 4px 20px rgba(124,58,237,0.3); transform: scale(1.05); }
+    .anim-card .play-sm:active { transform: scale(0.95); }
+    .copy-sm {
+      padding: 0.4rem 0.5rem; border-radius: 6px; border: 1px solid rgba(255,255,255,0.08);
+      background: transparent; color: #666; font-size: 0.75rem; cursor: pointer; transition: all 0.2s; font-family: inherit; line-height: 1;
+    }
+    .copy-sm:hover { color: #a78bfa; border-color: rgba(124,58,237,0.3); background: rgba(124,58,237,0.06); }
+    .copy-sm.copied { color: #34d399; border-color: rgba(52,211,153,0.3); }
+    .box-purple { background: linear-gradient(135deg, #7c3aed, #a855f7); }
+    .box-pink { background: linear-gradient(135deg, #ec4899, #f472b6); }
+    .box-orange { background: linear-gradient(135deg, #f59e0b, #fbbf24); }
+    .box-green { background: linear-gradient(135deg, #10b981, #34d399); }
+    .box-cyan { background: linear-gradient(135deg, #06b6d4, #22d3ee); }
+    .box-indigo { background: linear-gradient(135deg, #4f46e5, #6366f1); }
+    .box-rose { background: linear-gradient(135deg, #f43f5e, #fb7185); }
+    .box-red { background: linear-gradient(135deg, #ef4444, #f87171); }
+    footer {
+      text-align: center; padding: 3rem 2rem; color: #333; font-size: 0.8rem; border-top: 1px solid rgba(255,255,255,0.04);
+    }
+    footer a { color: #7c3aed; text-decoration: none; }
+    @media (max-width: 600px) {
+      header { padding: 4rem 1.25rem 2.5rem; }
+      header .back { left: 1rem; top: 1rem; font-size: 0.75rem; }
+      .grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); padding: 1.5rem 1rem; gap: 0.75rem; }
+      .anim-card { padding: 1rem; }
+      .anim-card .preview-box { width: 56px; height: 56px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="noise"></div>
+  <header>
+    <a href="../index.html" class="back">&larr; Back</a>
+    <h1><span>Flux</span> &mdash; Admin Bar & Toolbar</h1>
+    <p>Admin/editor toolbar variant components</p>
+    <div class="controls">
+      <div class="search-wrap">
+        <span class="search-icon">&#128269;</span>
+        <input type="text" class="searchInput" placeholder="Search..." autofocus>
+      </div>
+      <div class="filter-row filterRow">
+        <button class="filter-btn active" data-filter="all">All</button>
+      </div>
+      <div class="counter">Showing <span class="showCount">0</span> cards</div>
+    </div>
+  </header>
+  <div class="grid" id="grid"></div>
+  <footer>
+    <p><a href="../index.html">Flux</a> &mdash; Component Library</p>
+  </footer>
+  <script>
+    var cards = [{"anim": "fade-in", "category": "layout", "color": "box-purple", "name": "admin", "variant": "Top bar with logo", "preview": ""}, {"anim": "fade-up", "category": "layout", "color": "box-pink", "name": "admin", "variant": "Top bar with menu", "preview": ""}, {"anim": "fade-down", "category": "search", "color": "box-orange", "name": "admin", "variant": "With search field", "preview": ""}, {"anim": "fade-left", "category": "user", "color": "box-green", "name": "admin", "variant": "With user avatar", "preview": ""}, {"anim": "fade-right", "category": "notifications", "color": "box-cyan", "name": "admin", "variant": "Notifications bell + badge", "preview": ""}, {"anim": "fade-up-right", "category": "settings", "color": "box-indigo", "name": "admin", "variant": "Settings gear icon", "preview": ""}, {"anim": "fade-up-left", "category": "help", "color": "box-rose", "name": "admin", "variant": "Help icon button", "preview": ""}, {"anim": "fade-down-right", "category": "action", "color": "box-red", "name": "admin", "variant": "Add new button", "preview": ""}, {"anim": "fade-down-left", "category": "action", "color": "box-purple", "name": "admin", "variant": "Save button", "preview": ""}, {"anim": "flip-left", "category": "action", "color": "box-pink", "name": "admin", "variant": "Publish button", "preview": ""}, {"anim": "flip-right", "category": "action", "color": "box-orange", "name": "admin", "variant": "Preview button", "preview": ""}, {"anim": "flip-up", "category": "action", "color": "box-green", "name": "admin", "variant": "Undo/redo buttons", "preview": ""}, {"anim": "flip-down", "category": "action", "color": "box-cyan", "name": "admin", "variant": "History button", "preview": ""}, {"anim": "slide-up", "category": "status", "color": "box-indigo", "name": "admin", "variant": "Draft status indicator", "preview": ""}, {"anim": "slide-down", "category": "status", "color": "box-rose", "name": "admin", "variant": "Published status indicator", "preview": ""}, {"anim": "slide-left", "category": "status", "color": "box-red", "name": "admin", "variant": "Scheduled status indicator", "preview": ""}, {"anim": "slide-right", "category": "language", "color": "box-purple", "name": "admin", "variant": "Language selector", "preview": ""}, {"anim": "zoom-in", "category": "theme", "color": "box-pink", "name": "admin", "variant": "Theme toggle (dark/light)", "preview": ""}, {"anim": "zoom-in-up", "category": "view", "color": "box-orange", "name": "admin", "variant": "Fullscreen toggle", "preview": ""}, {"anim": "zoom-in-down", "category": "view", "color": "box-green", "name": "admin", "variant": "Collapse/expand sidebar", "preview": ""}, {"anim": "zoom-in-left", "category": "responsive", "color": "box-cyan", "name": "admin", "variant": "Desktop preview icon", "preview": ""}, {"anim": "zoom-in-right", "category": "responsive", "color": "box-indigo", "name": "admin", "variant": "Tablet preview icon", "preview": ""}, {"anim": "zoom-out", "category": "responsive", "color": "box-rose", "name": "admin", "variant": "Mobile preview icon", "preview": ""}, {"anim": "zoom-out-up", "category": "action", "color": "box-red", "name": "admin", "variant": "Clear cache button", "preview": ""}, {"anim": "zoom-out-down", "category": "badge", "color": "box-purple", "name": "admin", "variant": "Updates available badge", "preview": ""}, {"anim": "zoom-out-left", "category": "status", "color": "box-pink", "name": "admin", "variant": "Maintenance mode indicator", "preview": ""}, {"anim": "zoom-out-right", "category": "role", "color": "box-orange", "name": "admin", "variant": "Admin role badge", "preview": ""}, {"anim": "rotate-in", "category": "role", "color": "box-green", "name": "admin", "variant": "Editor role badge", "preview": ""}, {"anim": "rotate-out", "category": "role", "color": "box-cyan", "name": "admin", "variant": "Viewer role badge", "preview": ""}, {"anim": "blur-in", "category": "dropdown", "color": "box-indigo", "name": "admin", "variant": "Quick actions dropdown", "preview": ""}, {"anim": "blur-in-up", "category": "favorites", "color": "box-rose", "name": "admin", "variant": "Favorites star", "preview": ""}, {"anim": "skew-in", "category": "dropdown", "color": "box-red", "name": "admin", "variant": "Recent items dropdown", "preview": ""}, {"anim": "clip-in", "category": "navigation", "color": "box-purple", "name": "admin", "variant": "Breadcrumbs navigation", "preview": ""}, {"anim": "scale-x", "category": "progress", "color": "box-pink", "name": "admin", "variant": "Save progress indicator", "preview": ""}, {"anim": "scale-y", "category": "badge", "color": "box-orange", "name": "admin", "variant": "Auto-save badge", "preview": ""}, {"anim": "perspective-in", "category": "language", "color": "box-green", "name": "admin", "variant": "Multi-language switcher", "preview": ""}, {"anim": "elastic-up", "category": "notifications", "color": "box-cyan", "name": "admin", "variant": "Notification settings", "preview": ""}, {"anim": "elastic-left", "category": "user", "color": "box-indigo", "name": "admin", "variant": "User menu dropdown", "preview": ""}, {"anim": "elastic-right", "category": "user", "color": "box-rose", "name": "admin", "variant": "Logout button", "preview": ""}, {"anim": "bounce-in", "category": "user", "color": "box-red", "name": "admin", "variant": "Profile link", "preview": ""}, {"anim": "bounce-in-up", "category": "user", "color": "box-purple", "name": "admin", "variant": "Account settings", "preview": ""}, {"anim": "bounce-in-down", "category": "help", "color": "box-pink", "name": "admin", "variant": "Keyboard shortcuts help", "preview": ""}, {"anim": "bounce-in-left", "category": "info", "color": "box-orange", "name": "admin", "variant": "Version info badge", "preview": ""}, {"anim": "bounce-in-right", "category": "environment", "color": "box-green", "name": "admin", "variant": "Environment badge (dev/stage/prod)", "preview": ""}, {"anim": "back-in-up", "category": "info", "color": "box-cyan", "name": "admin", "variant": "Build info tooltip", "preview": ""}, {"anim": "back-in-down", "category": "git", "color": "box-indigo", "name": "admin", "variant": "Git branch indicator", "preview": ""}, {"anim": "back-in-left", "category": "deploy", "color": "box-rose", "name": "admin", "variant": "Deploy status", "preview": ""}, {"anim": "back-in-right", "category": "backup", "color": "box-red", "name": "admin", "variant": "Backup status", "preview": ""}, {"anim": "light-speed-in", "category": "cache", "color": "box-purple", "name": "admin", "variant": "Cache status indicator", "preview": ""}, {"anim": "light-speed-out", "category": "database", "color": "box-pink", "name": "admin", "variant": "Database status", "preview": ""}, {"anim": "reveal-left", "category": "server", "color": "box-orange", "name": "admin", "variant": "Server status dot", "preview": ""}, {"anim": "reveal-right", "category": "api", "color": "box-green", "name": "admin", "variant": "API status indicator", "preview": ""}, {"anim": "reveal-up", "category": "queue", "color": "box-cyan", "name": "admin", "variant": "Task queue status", "preview": ""}, {"anim": "reveal-down", "category": "queue", "color": "box-indigo", "name": "admin", "variant": "Email queue status", "preview": ""}, {"anim": "float", "category": "search", "color": "box-rose", "name": "admin", "variant": "Search index status", "preview": ""}, {"anim": "float-reverse", "category": "cdn", "color": "box-red", "name": "admin", "variant": "CDN status", "preview": ""}, {"anim": "rotate-down-left", "category": "ssl", "color": "box-purple", "name": "admin", "variant": "SSL status indicator", "preview": ""}, {"anim": "rotate-down-right", "category": "uptime", "color": "box-pink", "name": "admin", "variant": "Uptime badge", "preview": ""}, {"anim": "rotate-up-left", "category": "system", "color": "box-orange", "name": "admin", "variant": "Memory usage", "preview": ""}, {"anim": "rotate-up-right", "category": "system", "color": "box-green", "name": "admin", "variant": "CPU usage", "preview": ""}, {"anim": "perspective-out", "category": "system", "color": "box-cyan", "name": "admin", "variant": "Disk usage bar", "preview": ""}, {"anim": "perspective-up", "category": "stats", "color": "box-indigo", "name": "admin", "variant": "Active users count", "preview": ""}, {"anim": "perspective-down", "category": "stats", "color": "box-rose", "name": "admin", "variant": "Pending reviews count", "preview": ""}, {"anim": "perspective-left", "category": "stats", "color": "box-red", "name": "admin", "variant": "Reported content count", "preview": ""}, {"anim": "perspective-right", "category": "stats", "color": "box-purple", "name": "admin", "variant": "New signups today", "preview": ""}, {"anim": "spring-up", "category": "stats", "color": "box-pink", "name": "admin", "variant": "Revenue today", "preview": ""}, {"anim": "spring-down", "category": "stats", "color": "box-orange", "name": "admin", "variant": "Orders today", "preview": ""}, {"anim": "spring-left", "category": "stats", "color": "box-green", "name": "admin", "variant": "Support tickets open", "preview": ""}, {"anim": "spring-right", "category": "stats", "color": "box-cyan", "name": "admin", "variant": "Messages unread", "preview": ""}, {"anim": "stretch-x", "category": "notifications", "color": "box-indigo", "name": "admin", "variant": "Notifications unread", "preview": ""}, {"anim": "stretch-y", "category": "tasks", "color": "box-rose", "name": "admin", "variant": "Tasks assigned", "preview": ""}, {"anim": "fold-up", "category": "tasks", "color": "box-red", "name": "admin", "variant": "Tasks completed", "preview": ""}, {"anim": "fold-down", "category": "content", "color": "box-purple", "name": "admin", "variant": "Drafts count", "preview": ""}, {"anim": "fold-left", "category": "content", "color": "box-pink", "name": "admin", "variant": "Scheduled posts", "preview": ""}, {"anim": "fold-right", "category": "content", "color": "box-orange", "name": "admin", "variant": "Published today", "preview": ""}, {"anim": "glide-up", "category": "stats", "color": "box-green", "name": "admin", "variant": "Views today", "preview": ""}, {"anim": "glide-down", "category": "stats", "color": "box-cyan", "name": "admin", "variant": "Visitors online", "preview": ""}, {"anim": "glide-left", "category": "performance", "color": "box-indigo", "name": "admin", "variant": "Page load time", "preview": ""}, {"anim": "glide-right", "category": "alerts", "color": "box-rose", "name": "admin", "variant": "Error rate badge", "preview": ""}, {"anim": "roll-in", "category": "alerts", "color": "box-red", "name": "admin", "variant": "Warning badge", "preview": ""}, {"anim": "roll-out", "category": "alerts", "color": "box-purple", "name": "admin", "variant": "Info tip badge", "preview": ""}, {"anim": "spin-in", "category": "announcement", "color": "box-pink", "name": "admin", "variant": "Announcement banner", "preview": ""}, {"anim": "spin-out", "category": "flags", "color": "box-orange", "name": "admin", "variant": "Feature flag indicator", "preview": ""}, {"anim": "wipe-left", "category": "experiment", "color": "box-green", "name": "admin", "variant": "A/B test badge", "preview": ""}, {"anim": "wipe-right", "category": "badge", "color": "box-cyan", "name": "admin", "variant": "Experimental badge", "preview": ""}, {"anim": "wipe-up", "category": "badge", "color": "box-indigo", "name": "admin", "variant": "New feature badge", "preview": ""}, {"anim": "wipe-down", "category": "badge", "color": "box-rose", "name": "admin", "variant": "Beta badge", "preview": ""}, {"anim": "drop-in", "category": "badge", "color": "box-red", "name": "admin", "variant": "Alpha badge", "preview": ""}, {"anim": "dangle", "category": "badge", "color": "box-purple", "name": "admin", "variant": "Deprecated warning", "preview": ""}, {"anim": "rattle", "category": "badge", "color": "box-pink", "name": "admin", "variant": "Breaking change notice", "preview": ""}, {"anim": "pop-in", "category": "warnings", "color": "box-orange", "name": "admin", "variant": "Security alert", "preview": ""}, {"anim": "bounce", "category": "warnings", "color": "box-green", "name": "admin", "variant": "Compliance badge", "preview": ""}, {"anim": "flash", "category": "security", "color": "box-cyan", "name": "admin", "variant": "Accessibility score", "preview": ""}, {"anim": "pulse", "category": "compliance", "color": "box-indigo", "name": "admin", "variant": "SEO score", "preview": ""}, {"anim": "shake-x", "category": "scores", "color": "box-rose", "name": "admin", "variant": "Performance score", "preview": ""}, {"anim": "shake-y", "category": "scores", "color": "box-red", "name": "admin", "variant": "Best practices score", "preview": ""}, {"anim": "swing", "category": "scores", "color": "box-purple", "name": "admin", "variant": "PWA status", "preview": ""}, {"anim": "heartbeat", "category": "scores", "color": "box-pink", "name": "admin", "variant": "AMP status", "preview": ""}, {"anim": "jello", "category": "pwa", "color": "box-orange", "name": "admin", "variant": "RTL toggle", "preview": ""}];
+
+    function render() {{
+      var q = (document.querySelector('.searchInput').value || '').toLowerCase().trim();
+      var activeFilter = 'all';
+      var filtered = cards.filter(function(c) {{
+        var mf = activeFilter === 'all' || c.category === activeFilter;
+        var ms = !q || c.name.toLowerCase().indexOf(q) !== -1 || c.variant.toLowerCase().indexOf(q) !== -1;
+        return mf && ms;
+      }});
+      var grid = document.getElementById('grid');
+      if (filtered.length === 0) {{
+        grid.className = 'grid empty';
+        grid.innerHTML = '<p>No cards match.</p>';
+        document.querySelector('.showCount').textContent = '0';
+        return;
+      }}
+      grid.className = 'grid';
+      var html = '';
+      filtered.forEach(function(c) {{
+        html += '<div class="anim-card" data-aos="' + c.anim + '" data-category="' + c.category + '">';
+        html += '<div class="preview-box ' + c.color + '" data-anim="' + c.anim + '">' + (c.preview || '') + '</div>';
+        html += '<div class="cat-tag">' + c.category + '</div>';
+        html += '<div class="name">' + c.variant + '</div>';
+        html += '<div class="tag">data-aos="' + c.anim + '"</div>';
+        html += '<div style="display:flex;gap:0.4rem;justify-content:center">';
+        html += '<button class="play-sm">&#9654; Play</button>';
+        html += '<button class="copy-sm" data-code="data-aos=&quot;' + c.anim + '&quot;" title="Copy to clipboard">Copy</button>';
+        html += '</div></div>';
+      }});
+      grid.innerHTML = html;
+      document.querySelector('.showCount').textContent = filtered.length;
+      grid.querySelectorAll('.play-sm').forEach(function(btn) {{
+        btn.addEventListener('click', function() {{
+          var box = btn.closest('.anim-card').querySelector('.preview-box');
+          box.classList.remove('is-visible');
+          box.style.animation = 'none';
+          void box.offsetHeight;
+          box.style.animation = '';
+          setTimeout(function() {{ box.classList.add('is-visible'); }}, 10);
+        }});
+      }});
+      grid.querySelectorAll('.copy-sm').forEach(function(btn) {{
+        btn.addEventListener('click', function() {{
+          var code = btn.getAttribute('data-code');
+          if (navigator.clipboard) {{
+            navigator.clipboard.writeText(code).then(function() {{
+              btn.textContent = 'Copied!';
+              btn.classList.add('copied');
+              setTimeout(function() {{ btn.textContent = 'Copy'; btn.classList.remove('copied'); }}, 1200);
+            }});
+          }}
+        }});
+      }});
+    }}
+    document.querySelector('.filterRow') && document.querySelector('.filterRow').addEventListener('click', function(e) {{
+      var btn = e.target.closest('.filter-btn');
+      if (!btn) return;
+      document.querySelectorAll('.filter-btn').forEach(function(b) {{ b.classList.remove('active'); }});
+      btn.classList.add('active');
+      render();
+    }});
+    document.querySelector('.searchInput') && document.querySelector('.searchInput').addEventListener('input', render);
+    render();
+  </script>
+</body>
+</html>

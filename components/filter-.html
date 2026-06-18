@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Filter & Refine UI — Flux</title>
+  <link rel="stylesheet" href="../flux.css">
+  <style>
+    *, *::before, *::after {
+      margin: 0; padding: 0; box-sizing: border-box;
+    }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #07070a; color: #c8c8d0; line-height: 1.6; overflow-x: hidden;
+    }
+    ::selection { background: #7c3aed; color: #fff; }
+    .noise {
+      position: fixed; inset: 0; z-index: -1; opacity: 0.035; pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    }
+    header {
+      padding: 3rem 2rem 4rem; text-align: center; position: relative;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    header .back {
+      position: absolute; left: 2rem; top: 2rem; display: inline-flex; align-items: center; gap: 0.4rem;
+      color: #555; text-decoration: none; font-size: 0.85rem; transition: color 0.2s;
+    }
+    header .back:hover { color: #a78bfa; }
+    header h1 {
+      font-size: clamp(1.8rem, 4vw, 2.5rem); font-weight: 800; color: #fff; letter-spacing: -0.03em;
+    }
+    header h1 span { color: #7c3aed; }
+    header p { color: #555; margin-top: 0.5rem; font-size: 0.95rem; }
+    .controls {
+      max-width: 800px; margin: 2rem auto 0; display: flex; flex-direction: column; gap: 1rem;
+    }
+    .search-wrap { position: relative; }
+    .search-wrap input {
+      width: 100%; padding: 0.9rem 1.25rem 0.9rem 3rem; border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.03);
+      color: #e0e0e0; font-size: 0.95rem; font-family: inherit; outline: none; transition: border-color 0.2s;
+    }
+    .search-wrap input:focus { border-color: rgba(124,58,237,0.3); }
+    .search-wrap input::placeholder { color: #444; }
+    .search-wrap .search-icon {
+      position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: #444; font-size: 1.1rem; pointer-events: none;
+    }
+    .filter-row {
+      display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center;
+    }
+    .filter-btn {
+      padding: 0.5rem 1.2rem; border-radius: 100px; border: 1px solid rgba(255,255,255,0.08);
+      background: transparent; color: #666; font-size: 0.8rem; font-weight: 600; cursor: pointer;
+      transition: all 0.2s; font-family: inherit;
+    }
+    .filter-btn:hover { color: #a78bfa; border-color: rgba(124,58,237,0.2); }
+    .filter-btn.active { color: #fff; background: rgba(124,58,237,0.15); border-color: rgba(124,58,237,0.3); }
+    .counter { text-align: center; font-size: 0.8rem; color: #444; margin: 1.5rem 0 0; }
+    .counter span { color: #a78bfa; font-weight: 600; }
+    .grid {
+      max-width: 1280px; margin: 0 auto; padding: 2.5rem 2rem 4rem;
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1.25rem;
+    }
+    .grid.empty {
+      display: flex; align-items: center; justify-content: center; min-height: 200px; color: #444; font-size: 0.95rem;
+    }
+    .anim-card {
+      background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 14px; padding: 1.5rem 1.25rem; text-align: center; transition: all 0.3s;
+    }
+    .anim-card:hover { border-color: rgba(124,58,237,0.15); transform: translateY(-2px); }
+    .anim-card .preview-box {
+      width: 72px; height: 72px; border-radius: 12px; margin: 0 auto 1rem;
+      transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      will-change: transform, opacity, filter; backface-visibility: hidden;
+    }
+    .anim-card .preview-box.is-visible {
+      opacity: 1 !important; transform: none !important; filter: none !important;
+      clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%) !important;
+    }
+    .anim-card .name {
+      font-size: 0.78rem; font-weight: 600; color: #e0e0e0; margin-bottom: 0.2rem; word-break: break-word;
+    }
+    .anim-card .tag {
+      font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.55rem; color: #a78bfa;
+      background: rgba(124,58,237,0.08); display: inline-block; padding: 0.15rem 0.5rem; border-radius: 4px; margin-bottom: 0.85rem;
+    }
+    .anim-card .cat-tag {
+      font-size: 0.55rem; color: #555; display: block; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.06em;
+    }
+    .anim-card .play-sm {
+      padding: 0.4rem 1rem; border-radius: 100px; border: none; background: linear-gradient(135deg, #7c3aed, #a855f7);
+      color: #fff; font-size: 0.7rem; font-weight: 600; cursor: pointer; transition: all 0.3s; font-family: inherit;
+    }
+    .anim-card .play-sm:hover { box-shadow: 0 4px 20px rgba(124,58,237,0.3); transform: scale(1.05); }
+    .anim-card .play-sm:active { transform: scale(0.95); }
+    .copy-sm {
+      padding: 0.4rem 0.5rem; border-radius: 6px; border: 1px solid rgba(255,255,255,0.08);
+      background: transparent; color: #666; font-size: 0.75rem; cursor: pointer; transition: all 0.2s; font-family: inherit; line-height: 1;
+    }
+    .copy-sm:hover { color: #a78bfa; border-color: rgba(124,58,237,0.3); background: rgba(124,58,237,0.06); }
+    .copy-sm.copied { color: #34d399; border-color: rgba(52,211,153,0.3); }
+    .box-purple { background: linear-gradient(135deg, #7c3aed, #a855f7); }
+    .box-pink { background: linear-gradient(135deg, #ec4899, #f472b6); }
+    .box-orange { background: linear-gradient(135deg, #f59e0b, #fbbf24); }
+    .box-green { background: linear-gradient(135deg, #10b981, #34d399); }
+    .box-cyan { background: linear-gradient(135deg, #06b6d4, #22d3ee); }
+    .box-indigo { background: linear-gradient(135deg, #4f46e5, #6366f1); }
+    .box-rose { background: linear-gradient(135deg, #f43f5e, #fb7185); }
+    .box-red { background: linear-gradient(135deg, #ef4444, #f87171); }
+    footer {
+      text-align: center; padding: 3rem 2rem; color: #333; font-size: 0.8rem; border-top: 1px solid rgba(255,255,255,0.04);
+    }
+    footer a { color: #7c3aed; text-decoration: none; }
+    @media (max-width: 600px) {
+      header { padding: 4rem 1.25rem 2.5rem; }
+      header .back { left: 1rem; top: 1rem; font-size: 0.75rem; }
+      .grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); padding: 1.5rem 1rem; gap: 0.75rem; }
+      .anim-card { padding: 1rem; }
+      .anim-card .preview-box { width: 56px; height: 56px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="noise"></div>
+  <header>
+    <a href="../index.html" class="back">&larr; Back</a>
+    <h1><span>Flux</span> &mdash; Filter & Refine UI</h1>
+    <p>Filter/refine UI component variants</p>
+    <div class="controls">
+      <div class="search-wrap">
+        <span class="search-icon">&#128269;</span>
+        <input type="text" class="searchInput" placeholder="Search..." autofocus>
+      </div>
+      <div class="filter-row filterRow">
+        <button class="filter-btn active" data-filter="all">All</button>
+      </div>
+      <div class="counter">Showing <span class="showCount">0</span> cards</div>
+    </div>
+  </header>
+  <div class="grid" id="grid"></div>
+  <footer>
+    <p><a href="../index.html">Flux</a> &mdash; Component Library</p>
+  </footer>
+  <script>
+    var cards = [{"anim": "fade-in", "category": "panel", "color": "box-purple", "name": "filter", "variant": "Filter panel sidebar", "preview": ""}, {"anim": "fade-up", "category": "bar", "color": "box-pink", "name": "filter", "variant": "Filter bar top", "preview": ""}, {"anim": "fade-down", "category": "bar", "color": "box-orange", "name": "filter", "variant": "Filter horizontal bar", "preview": ""}, {"anim": "fade-left", "category": "dropdown", "color": "box-green", "name": "filter", "variant": "Filter dropdown menu", "preview": ""}, {"anim": "fade-right", "category": "checkbox", "color": "box-cyan", "name": "filter", "variant": "Checkbox filter group", "preview": ""}, {"anim": "fade-up-right", "category": "radio", "color": "box-indigo", "name": "filter", "variant": "Radio button filter", "preview": ""}, {"anim": "fade-up-left", "category": "toggle", "color": "box-rose", "name": "filter", "variant": "Toggle switches", "preview": ""}, {"anim": "fade-down-right", "category": "slider", "color": "box-red", "name": "filter", "variant": "Slider filter", "preview": ""}, {"anim": "fade-down-left", "category": "range", "color": "box-purple", "name": "filter", "variant": "Range slider (dual)", "preview": ""}, {"anim": "flip-left", "category": "date", "color": "box-pink", "name": "filter", "variant": "Date range picker", "preview": ""}, {"anim": "flip-right", "category": "color", "color": "box-orange", "name": "filter", "variant": "Color swatches", "preview": ""}, {"anim": "flip-up", "category": "size", "color": "box-green", "name": "filter", "variant": "Size selector grid", "preview": ""}, {"anim": "flip-down", "category": "brand", "color": "box-cyan", "name": "filter", "variant": "Brand selector list", "preview": ""}, {"anim": "slide-up", "category": "tree", "color": "box-indigo", "name": "filter", "variant": "Category tree", "preview": ""}, {"anim": "slide-down", "category": "tag", "color": "box-rose", "name": "filter", "variant": "Tag cloud", "preview": ""}, {"anim": "slide-left", "category": "search", "color": "box-red", "name": "filter", "variant": "Search within filter", "preview": ""}, {"anim": "slide-right", "category": "active", "color": "box-purple", "name": "filter", "variant": "Active filters display", "preview": ""}, {"anim": "zoom-in", "category": "action", "color": "box-pink", "name": "filter", "variant": "Clear all button", "preview": ""}, {"anim": "zoom-in-up", "category": "badge", "color": "box-orange", "name": "filter", "variant": "Count badges on filters", "preview": ""}, {"anim": "zoom-in-down", "category": "action", "color": "box-green", "name": "filter", "variant": "Apply button", "preview": ""}, {"anim": "zoom-in-left", "category": "action", "color": "box-cyan", "name": "filter", "variant": "Reset button", "preview": ""}, {"anim": "zoom-in-right", "category": "auto", "color": "box-indigo", "name": "filter", "variant": "Auto-apply on change", "preview": ""}, {"anim": "zoom-out", "category": "sort", "color": "box-rose", "name": "filter", "variant": "Sort by dropdown", "preview": ""}, {"anim": "zoom-out-up", "category": "toggle", "color": "box-red", "name": "filter", "variant": "Grid/list toggle", "preview": ""}, {"anim": "zoom-out-down", "category": "save", "color": "box-purple", "name": "filter", "variant": "Save filter preset", "preview": ""}, {"anim": "zoom-out-left", "category": "recent", "color": "box-pink", "name": "filter", "variant": "Recent filters list", "preview": ""}, {"anim": "zoom-out-right", "category": "popular", "color": "box-orange", "name": "filter", "variant": "Popular filters", "preview": ""}, {"anim": "rotate-in", "category": "count", "color": "box-green", "name": "filter", "variant": "Results count display", "preview": ""}, {"anim": "rotate-out", "category": "empty", "color": "box-cyan", "name": "filter", "variant": "Empty results state", "preview": ""}, {"anim": "blur-in", "category": "loading", "color": "box-indigo", "name": "filter", "variant": "Loading skeleton", "preview": ""}, {"anim": "blur-in-up", "category": "section", "color": "box-rose", "name": "filter", "variant": "Expand/collapse sections", "preview": ""}, {"anim": "skew-in", "category": "multi", "color": "box-red", "name": "filter", "variant": "Multi-select chips", "preview": ""}, {"anim": "clip-in", "category": "single", "color": "box-purple", "name": "filter", "variant": "Single-select pills", "preview": ""}, {"anim": "scale-x", "category": "logic", "color": "box-pink", "name": "filter", "variant": "AND/OR logic toggle", "preview": ""}, {"anim": "scale-y", "category": "price", "color": "box-orange", "name": "filter", "variant": "Price range slider", "preview": ""}, {"anim": "perspective-in", "category": "rating", "color": "box-green", "name": "filter", "variant": "Rating stars filter", "preview": ""}, {"anim": "elastic-up", "category": "availability", "color": "box-cyan", "name": "filter", "variant": "Availability toggle", "preview": ""}, {"anim": "elastic-left", "category": "promo", "color": "box-indigo", "name": "filter", "variant": "Promo/discount toggle", "preview": ""}, {"anim": "elastic-right", "category": "range", "color": "box-rose", "name": "filter", "variant": "Custom range input", "preview": ""}, {"anim": "bounce-in", "category": "input", "color": "box-red", "name": "filter", "variant": "Min/max input fields", "preview": ""}, {"anim": "bounce-in-up", "category": "slider", "color": "box-purple", "name": "filter", "variant": "Slider with linked input", "preview": ""}, {"anim": "bounce-in-down", "category": "picker", "color": "box-pink", "name": "filter", "variant": "Color picker swatch", "preview": ""}, {"anim": "bounce-in-left", "category": "alpha", "color": "box-orange", "name": "filter", "variant": "Alphabetical A-Z list", "preview": ""}, {"anim": "bounce-in-right", "category": "numeric", "color": "box-green", "name": "filter", "variant": "Numerical range", "preview": ""}, {"anim": "back-in-up", "category": "year", "color": "box-cyan", "name": "filter", "variant": "Year filter slider", "preview": ""}, {"anim": "back-in-down", "category": "month", "color": "box-indigo", "name": "filter", "variant": "Month filter grid", "preview": ""}, {"anim": "back-in-left", "category": "weekday", "color": "box-rose", "name": "filter", "variant": "Weekday filter", "preview": ""}, {"anim": "back-in-right", "category": "time", "color": "box-red", "name": "filter", "variant": "Time range picker", "preview": ""}, {"anim": "light-speed-in", "category": "duration", "color": "box-purple", "name": "filter", "variant": "Duration filter", "preview": ""}, {"anim": "light-speed-out", "category": "distance", "color": "box-pink", "name": "filter", "variant": "Distance radius", "preview": ""}, {"anim": "reveal-left", "category": "weight", "color": "box-orange", "name": "filter", "variant": "Weight range", "preview": ""}, {"anim": "reveal-right", "category": "height", "color": "box-green", "name": "filter", "variant": "Height range", "preview": ""}, {"anim": "reveal-up", "category": "volume", "color": "box-cyan", "name": "filter", "variant": "Volume range", "preview": ""}, {"anim": "reveal-down", "category": "temperature", "color": "box-indigo", "name": "filter", "variant": "Temperature range", "preview": ""}, {"anim": "float", "category": "speed", "color": "box-rose", "name": "filter", "variant": "Speed range", "preview": ""}, {"anim": "float-reverse", "category": "currency", "color": "box-red", "name": "filter", "variant": "Currency range", "preview": ""}, {"anim": "rotate-down-left", "category": "percent", "color": "box-purple", "name": "filter", "variant": "Percentage slider", "preview": ""}, {"anim": "rotate-down-right", "category": "score", "color": "box-pink", "name": "filter", "variant": "Score range", "preview": ""}, {"anim": "rotate-up-left", "category": "level", "color": "box-orange", "name": "filter", "variant": "Level selector", "preview": ""}, {"anim": "rotate-up-right", "category": "priority", "color": "box-green", "name": "filter", "variant": "Priority selector", "preview": ""}, {"anim": "perspective-out", "category": "status", "color": "box-cyan", "name": "filter", "variant": "Status filter (multi)", "preview": ""}, {"anim": "perspective-up", "category": "type", "color": "box-indigo", "name": "filter", "variant": "Type filter grid", "preview": ""}, {"anim": "perspective-down", "category": "material", "color": "box-rose", "name": "filter", "variant": "Material filter", "preview": ""}, {"anim": "perspective-left", "category": "style", "color": "box-red", "name": "filter", "variant": "Style filter", "preview": ""}, {"anim": "perspective-right", "category": "gender", "color": "box-purple", "name": "filter", "variant": "Gender filter", "preview": ""}, {"anim": "spring-up", "category": "age", "color": "box-pink", "name": "filter", "variant": "Age range", "preview": ""}, {"anim": "spring-down", "category": "size", "color": "box-orange", "name": "filter", "variant": "Size chart", "preview": ""}, {"anim": "spring-left", "category": "fit", "color": "box-green", "name": "filter", "variant": "Fit selector", "preview": ""}, {"anim": "spring-right", "category": "pattern", "color": "box-cyan", "name": "filter", "variant": "Pattern selector", "preview": ""}, {"anim": "stretch-x", "category": "texture", "color": "box-indigo", "name": "filter", "variant": "Texture selector", "preview": ""}, {"anim": "stretch-y", "category": "scent", "color": "box-rose", "name": "filter", "variant": "Scent selector", "preview": ""}, {"anim": "fold-up", "category": "flavor", "color": "box-red", "name": "filter", "variant": "Flavor selector", "preview": ""}, {"anim": "fold-down", "category": "dietary", "color": "box-purple", "name": "filter", "variant": "Dietary filter", "preview": ""}, {"anim": "fold-left", "category": "allergen", "color": "box-pink", "name": "filter", "variant": "Allergen filter", "preview": ""}, {"anim": "fold-right", "category": "brand", "color": "box-orange", "name": "filter", "variant": "Brand A-Z", "preview": ""}, {"anim": "glide-up", "category": "store", "color": "box-green", "name": "filter", "variant": "Store selector", "preview": ""}, {"anim": "glide-down", "category": "location", "color": "box-cyan", "name": "filter", "variant": "Location filter", "preview": ""}, {"anim": "glide-left", "category": "language", "color": "box-indigo", "name": "filter", "variant": "Language filter", "preview": ""}, {"anim": "glide-right", "category": "format", "color": "box-rose", "name": "filter", "variant": "Format filter", "preview": ""}, {"anim": "roll-in", "category": "resolution", "color": "box-red", "name": "filter", "variant": "Resolution filter", "preview": ""}, {"anim": "roll-out", "category": "quality", "color": "box-purple", "name": "filter", "variant": "Quality filter", "preview": ""}, {"anim": "spin-in", "category": "genre", "color": "box-pink", "name": "filter", "variant": "Genre filter", "preview": ""}, {"anim": "spin-out", "category": "mood", "color": "box-orange", "name": "filter", "variant": "Mood filter", "preview": ""}, {"anim": "wipe-left", "category": "era", "color": "box-green", "name": "filter", "variant": "Era/decade filter", "preview": ""}, {"anim": "wipe-right", "category": "artist", "color": "box-cyan", "name": "filter", "variant": "Artist filter", "preview": ""}, {"anim": "wipe-up", "category": "album", "color": "box-indigo", "name": "filter", "variant": "Album filter", "preview": ""}, {"anim": "wipe-down", "category": "platform", "color": "box-rose", "name": "filter", "variant": "Platform filter", "preview": ""}, {"anim": "drop-in", "category": "device", "color": "box-red", "name": "filter", "variant": "Device filter", "preview": ""}, {"anim": "dangle", "category": "os", "color": "box-purple", "name": "filter", "variant": "OS filter", "preview": ""}, {"anim": "rattle", "category": "browser", "color": "box-pink", "name": "filter", "variant": "Browser filter", "preview": ""}, {"anim": "pop-in", "category": "feature", "color": "box-orange", "name": "filter", "variant": "Feature toggle", "preview": ""}, {"anim": "bounce", "category": "version", "color": "box-green", "name": "filter", "variant": "Version range", "preview": ""}, {"anim": "flash", "category": "license", "color": "box-cyan", "name": "filter", "variant": "License filter", "preview": ""}, {"anim": "pulse", "category": "tier", "color": "box-indigo", "name": "filter", "variant": "Price tier", "preview": ""}, {"anim": "shake-x", "category": "subscription", "color": "box-rose", "name": "filter", "variant": "Subscription tier", "preview": ""}, {"anim": "shake-y", "category": "membership", "color": "box-red", "name": "filter", "variant": "Membership level", "preview": ""}, {"anim": "swing", "category": "rating", "color": "box-purple", "name": "filter", "variant": "Rating range (1-5)", "preview": ""}, {"anim": "heartbeat", "category": "reviews", "color": "box-pink", "name": "filter", "variant": "Review count", "preview": ""}, {"anim": "jello", "category": "popularity", "color": "box-orange", "name": "filter", "variant": "Popularity slider", "preview": ""}];
+
+    function render() {{
+      var q = (document.querySelector('.searchInput').value || '').toLowerCase().trim();
+      var activeFilter = 'all';
+      var filtered = cards.filter(function(c) {{
+        var mf = activeFilter === 'all' || c.category === activeFilter;
+        var ms = !q || c.name.toLowerCase().indexOf(q) !== -1 || c.variant.toLowerCase().indexOf(q) !== -1;
+        return mf && ms;
+      }});
+      var grid = document.getElementById('grid');
+      if (filtered.length === 0) {{
+        grid.className = 'grid empty';
+        grid.innerHTML = '<p>No cards match.</p>';
+        document.querySelector('.showCount').textContent = '0';
+        return;
+      }}
+      grid.className = 'grid';
+      var html = '';
+      filtered.forEach(function(c) {{
+        html += '<div class="anim-card" data-aos="' + c.anim + '" data-category="' + c.category + '">';
+        html += '<div class="preview-box ' + c.color + '" data-anim="' + c.anim + '">' + (c.preview || '') + '</div>';
+        html += '<div class="cat-tag">' + c.category + '</div>';
+        html += '<div class="name">' + c.variant + '</div>';
+        html += '<div class="tag">data-aos="' + c.anim + '"</div>';
+        html += '<div style="display:flex;gap:0.4rem;justify-content:center">';
+        html += '<button class="play-sm">&#9654; Play</button>';
+        html += '<button class="copy-sm" data-code="data-aos=&quot;' + c.anim + '&quot;" title="Copy to clipboard">Copy</button>';
+        html += '</div></div>';
+      }});
+      grid.innerHTML = html;
+      document.querySelector('.showCount').textContent = filtered.length;
+      grid.querySelectorAll('.play-sm').forEach(function(btn) {{
+        btn.addEventListener('click', function() {{
+          var box = btn.closest('.anim-card').querySelector('.preview-box');
+          box.classList.remove('is-visible');
+          box.style.animation = 'none';
+          void box.offsetHeight;
+          box.style.animation = '';
+          setTimeout(function() {{ box.classList.add('is-visible'); }}, 10);
+        }});
+      }});
+      grid.querySelectorAll('.copy-sm').forEach(function(btn) {{
+        btn.addEventListener('click', function() {{
+          var code = btn.getAttribute('data-code');
+          if (navigator.clipboard) {{
+            navigator.clipboard.writeText(code).then(function() {{
+              btn.textContent = 'Copied!';
+              btn.classList.add('copied');
+              setTimeout(function() {{ btn.textContent = 'Copy'; btn.classList.remove('copied'); }}, 1200);
+            }});
+          }}
+        }});
+      }});
+    }}
+    document.querySelector('.filterRow') && document.querySelector('.filterRow').addEventListener('click', function(e) {{
+      var btn = e.target.closest('.filter-btn');
+      if (!btn) return;
+      document.querySelectorAll('.filter-btn').forEach(function(b) {{ b.classList.remove('active'); }});
+      btn.classList.add('active');
+      render();
+    }});
+    document.querySelector('.searchInput') && document.querySelector('.searchInput').addEventListener('input', render);
+    render();
+  </script>
+</body>
+</html>
