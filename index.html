@@ -608,6 +608,172 @@
     .code-block .string { color: #34d399; }
     .code-block .keyword { color: #f59e0b; }
 
+    /* ── STATS ── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2rem;
+    }
+
+    .stat-item {
+      text-align: center;
+      padding: 2.5rem 1rem;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 16px;
+      transition: border-color 0.3s;
+    }
+
+    .stat-item:hover { border-color: rgba(124,58,237,0.15); }
+
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, #7c3aed, #a855f7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+      margin-bottom: 0.35rem;
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: #555;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 600;
+    }
+
+    /* ── FEATURES ── */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .feature-card {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 16px;
+      padding: 2rem;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+
+    .feature-card:hover {
+      border-color: rgba(124,58,237,0.15);
+      transform: translateY(-3px);
+    }
+
+    .feature-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: rgba(124,58,237,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.25rem;
+      font-size: 1.2rem;
+    }
+
+    .feature-card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.4rem;
+    }
+
+    .feature-card p {
+      font-size: 0.8rem;
+      color: #555;
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    /* ── USE CASES ── */
+    .cases-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .case-card {
+      border-radius: 16px;
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.06);
+      background: rgba(255,255,255,0.02);
+    }
+
+    .case-card .case-bg {
+      position: absolute;
+      inset: 0;
+      opacity: 0.06;
+      pointer-events: none;
+    }
+
+    .case-card h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.4rem;
+      position: relative;
+    }
+
+    .case-card p {
+      font-size: 0.78rem;
+      color: #555;
+      line-height: 1.6;
+      margin: 0;
+      position: relative;
+    }
+
+    .case-card .arrow {
+      margin-top: 1rem;
+      font-size: 0.7rem;
+      color: #7c3aed;
+      position: relative;
+    }
+
+    /* ── CTA ── */
+    .cta-section {
+      text-align: center;
+      padding: 8rem 2rem;
+      position: relative;
+    }
+
+    .cta-section .glow {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(124,58,237,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .cta-section h2 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.03em;
+      position: relative;
+    }
+
+    .cta-section .subtitle {
+      color: #555;
+      font-size: 1rem;
+      margin-bottom: 2.5rem;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+      position: relative;
+    }
+
     /* ── FOOTER ── */
     footer {
       text-align: center;
@@ -629,6 +795,7 @@
       .preview-grid { grid-template-columns: 1fr; }
       .config-grid { grid-template-columns: 1fr; }
       .demo-showcase { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 0.75rem; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
     }
   </style>
 </head>
@@ -672,6 +839,21 @@
       <span>Scroll</span>
     </div>
   </header>
+
+  <div class="section-divider"></div>
+
+  <section id="stats">
+    <div class="section-label" data-aos="fade-up">By the Numbers</div>
+    <h2 data-aos="fade-up">Built for scale,<br>perfected for every pixel</h2>
+    <p class="subtitle" data-aos="fade-up" data-aos-delay="100">Zero bloat, maximum impact. Flux packs a punch without weighing you down.</p>
+
+    <div class="stats-grid">
+      <div class="stat-item" data-aos="zoom-in" data-aos-delay="0"><div class="stat-number">99</div><div class="stat-label">Animations</div></div>
+      <div class="stat-item" data-aos="zoom-in" data-aos-delay="80"><div class="stat-number">25</div><div class="stat-label">Categories</div></div>
+      <div class="stat-item" data-aos="zoom-in" data-aos-delay="160"><div class="stat-number">0</div><div class="stat-label">Dependencies</div></div>
+      <div class="stat-item" data-aos="zoom-in" data-aos-delay="240"><div class="stat-number">6KB</div><div class="stat-label">Gzipped</div></div>
+    </div>
+  </section>
 
   <div class="section-divider"></div>
 
@@ -995,6 +1177,82 @@
 
   <div class="section-divider"></div>
 
+  <section id="features">
+    <div class="section-label" data-aos="fade-up">Why Flux</div>
+    <h2 data-aos="fade-up">Everything you need,<br>nothing you don't</h2>
+    <p class="subtitle" data-aos="fade-up" data-aos-delay="100">Purpose-built for developers who want scroll animations without the overhead.</p>
+
+    <div class="features-grid">
+      <div class="feature-card" data-aos="fade-up">
+        <div class="feature-icon">&#9889;</div>
+        <h3>Zero Dependencies</h3>
+        <p>No jQuery, no frameworks, no build tools. Drop two files in and you're done. Works with any tech stack.</p>
+      </div>
+      <div class="feature-card" data-aos="fade-up" data-aos-delay="60">
+        <div class="feature-icon">&#128200;</div>
+        <h3>99 Animations</h3>
+        <p>Fade, flip, slide, zoom, bounce, back, spring, glide, perspective, rotate, fold, stretch, and more — organised across 25 categories.</p>
+      </div>
+      <div class="feature-card" data-aos="fade-up" data-aos-delay="120">
+        <div class="feature-icon">&#9881;</div>
+        <h3>Fully Customisable</h3>
+        <p>Every animation supports custom duration, delay, easing, offset, anchor placement, and trigger behaviour — per element.</p>
+      </div>
+      <div class="feature-card" data-aos="fade-up" data-aos-delay="180">
+        <div class="feature-icon">&#127775;</div>
+        <h3>Presets &amp; Groups</h3>
+        <p>One-attribute presets for instant results. Group elements to animate together. Stagger children automatically.</p>
+      </div>
+      <div class="feature-card" data-aos="fade-up" data-aos-delay="240">
+        <div class="feature-icon">&#128270;</div>
+        <h3>Accessible by Default</h3>
+        <p>Respects <code style="color:#a78bfa;">prefers-reduced-motion</code>. Responds to viewport changes. Debug overlay included for development.</p>
+      </div>
+      <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
+        <div class="feature-icon">&#127760;</div>
+        <h3>CDN Ready</h3>
+        <p>Serve directly from jsDelivr. Versioned releases via GitHub tags. Works from CDN or local files.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <section id="cases">
+    <div class="section-label" data-aos="fade-up">Use Cases</div>
+    <h2 data-aos="fade-up">Perfect for every<br>kind of project</h2>
+    <p class="subtitle" data-aos="fade-up" data-aos-delay="100">From landing pages to dashboards, Flux fits right in.</p>
+
+    <div class="cases-grid">
+      <div class="case-card" data-aos="fade-up">
+        <div class="case-bg" style="background:linear-gradient(135deg,#7c3aed,transparent)"></div>
+        <h3>Landing Pages</h3>
+        <p>Create memorable first impressions with smooth fade and slide entrances for headlines, features, and CTAs.</p>
+        <div class="arrow">&rarr; fade-up, zoom-in, spring-up</div>
+      </div>
+      <div class="case-card" data-aos="fade-up" data-aos-delay="80">
+        <div class="case-bg" style="background:linear-gradient(135deg,#ec4899,transparent)"></div>
+        <h3>Portfolios</h3>
+        <p>Showcase your work with staggered reveal animations that guide the eye through each project card.</p>
+        <div class="arrow">&rarr; reveal-left, glide-up, stagger</div>
+      </div>
+      <div class="case-card" data-aos="fade-up" data-aos-delay="160">
+        <div class="case-bg" style="background:linear-gradient(135deg,#10b981,transparent)"></div>
+        <h3>Blog Posts</h3>
+        <p>Bring content to life with subtle fade-ins on images, blockquotes, and section headings as readers scroll.</p>
+        <div class="arrow">&rarr; fade-in, blur-in, fade-up</div>
+      </div>
+      <div class="case-card" data-aos="fade-up" data-aos-delay="240">
+        <div class="case-bg" style="background:linear-gradient(135deg,#f59e0b,transparent)"></div>
+        <h3>Dashboards</h3>
+        <p>Animate charts, cards, and metrics as they enter view for a polished, data-driven experience.</p>
+        <div class="arrow">&rarr; scale-x, pop-in, groups</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
   <section id="usage">
     <div class="section-label" data-aos="fade-up">Get Started</div>
     <h2 data-aos="fade-up">Add to your project<br>in seconds</h2>
@@ -1039,6 +1297,21 @@
         &nbsp;&nbsp;debug: <span class="string">false</span><br>
         });
       </code>
+    </div>
+  </section>
+
+  <section class="cta-section" data-aos="fade-up">
+    <div class="glow"></div>
+    <div class="section-label" style="justify-content:center" data-aos="fade-up">Open Source</div>
+    <h2 data-aos="fade-up" data-aos-delay="60">Start animating<br>in under a minute</h2>
+    <p class="subtitle" data-aos="fade-up" data-aos-delay="120">Free. MIT licensed. Zero excuses.</p>
+    <div data-aos="fade-up" data-aos-delay="200">
+      <a href="#usage" class="btn btn-primary" style="text-decoration:none;margin-right:0.75rem">
+        Get Started
+      </a>
+      <a href="https://github.com/cognisutra/Flux" target="_blank" class="btn btn-secondary" style="text-decoration:none">
+        GitHub &rarr;
+      </a>
     </div>
   </section>
 
