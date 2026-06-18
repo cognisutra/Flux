@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flux — Animation Library</title>
+  <link rel="stylesheet" href="flux.css">
+  <style>
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #07070a;
+      color: #c8c8d0;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    ::selection {
+      background: #7c3aed;
+      color: #fff;
+    }
+
+    .noise {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      opacity: 0.035;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+
+    .cursor-glow {
+      position: fixed;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(124,58,237,0.08) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: -1;
+      transform: translate(-50%, -50%);
+      transition: left 0.2s ease-out, top 0.2s ease-out;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(124,58,237,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(124,58,237,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
+      -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(124,58,237,0.1);
+      border: 1px solid rgba(124,58,237,0.2);
+      padding: 0.45rem 1.25rem;
+      border-radius: 100px;
+      font-size: 0.8rem;
+      color: #a78bfa;
+      letter-spacing: 0.05em;
+      margin-bottom: 2rem;
+    }
+
+    .hero-badge span {
+      width: 6px;
+      height: 6px;
+      background: #7c3aed;
+      border-radius: 50%;
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.6); }
+    }
+
+    .hero h1 {
+      font-size: clamp(3.5rem, 12vw, 9rem);
+      font-weight: 900;
+      line-height: 0.92;
+      letter-spacing: -0.05em;
+      color: #fff;
+      position: relative;
+    }
+
+    .hero h1 .gradient {
+      background: linear-gradient(135deg, #7c3aed 0%, #ec4899 40%, #f59e0b 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero h1 .outline {
+      -webkit-text-stroke: 1.5px rgba(255,255,255,0.15);
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      color: #666;
+      max-width: 520px;
+      margin-top: 1.5rem;
+      line-height: 1.7;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.85rem 2rem;
+      border-radius: 100px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #7c3aed, #a855f7);
+      color: #fff;
+      box-shadow: 0 4px 30px rgba(124,58,237,0.3);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 40px rgba(124,58,237,0.4);
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.05);
+      color: #c8c8d0;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255,255,255,0.1);
+      border-color: rgba(255,255,255,0.2);
+    }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 3rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      color: #444;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .scroll-hint .mouse {
+      width: 22px;
+      height: 36px;
+      border: 2px solid #333;
+      border-radius: 12px;
+      position: relative;
+    }
+
+    .scroll-hint .mouse::after {
+      content: '';
+      position: absolute;
+      top: 6px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 3px;
+      height: 8px;
+      background: #7c3aed;
+      border-radius: 3px;
+      animation: scroll-wheel 2s ease-in-out infinite;
+    }
+
+    @keyframes scroll-wheel {
+      0% { opacity: 1; transform: translateX(-50%) translateY(0); }
+      100% { opacity: 0; transform: translateX(-50%) translateY(12px); }
+    }
+
+    /* ── SECTIONS ── */
+    section {
+      padding: 8rem 2rem;
+      max-width: 1280px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .section-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #7c3aed;
+      margin-bottom: 1rem;
+    }
+
+    .section-label::before {
+      content: '';
+      width: 24px;
+      height: 1.5px;
+      background: #7c3aed;
+    }
+
+    section h2 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.03em;
+    }
+
+    section .subtitle {
+      color: #555;
+      font-size: 1rem;
+      margin-bottom: 4rem;
+      max-width: 500px;
+    }
+
+    .section-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(124,58,237,0.15), transparent);
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    /* ── PREVIEW CARDS ── */
+    .preview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .preview-card {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 16px;
+      padding: 1.75rem;
+      transition: border-color 0.3s;
+    }
+
+    .preview-card:hover {
+      border-color: rgba(124,58,237,0.15);
+    }
+
+    .preview-card h3 {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 1rem;
+      letter-spacing: 0.02em;
+    }
+
+    .preview-box {
+      width: 80px;
+      height: 80px;
+      border-radius: 14px;
+      transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      will-change: transform, opacity, filter;
+      backface-visibility: hidden;
+    }
+
+    .preview-box.is-visible {
+      opacity: 1 !important;
+      transform: none !important;
+      filter: none !important;
+      clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%) !important;
+    }
+
+    .pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin: 0.75rem 0 1rem;
+    }
+
+    .pill {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.6rem;
+      font-weight: 600;
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: transparent;
+      color: #555;
+      cursor: pointer;
+      transition: all 0.2s;
+      letter-spacing: 0.01em;
+    }
+
+    .pill:hover {
+      color: #a78bfa;
+      border-color: rgba(124,58,237,0.2);
+      background: rgba(124,58,237,0.06);
+    }
+
+    .pill.active {
+      color: #a78bfa;
+      border-color: rgba(124,58,237,0.3);
+      background: rgba(124,58,237,0.1);
+    }
+
+    .play-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.5rem 1.2rem;
+      border-radius: 100px;
+      border: none;
+      background: linear-gradient(135deg, #7c3aed, #a855f7);
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-family: inherit;
+      letter-spacing: 0.02em;
+    }
+
+    .play-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 20px rgba(124,58,237,0.3);
+    }
+
+    .play-btn:active {
+      transform: scale(0.95);
+    }
+
+    /* ── PREVIEW ANIMATION STATES ── */
+    .preview-box[data-anim="fade-in"] { opacity: 0; }
+    .preview-box[data-anim="fade-up"] { opacity: 0; transform: translateY(60px); }
+    .preview-box[data-anim="fade-down"] { opacity: 0; transform: translateY(-60px); }
+    .preview-box[data-anim="fade-left"] { opacity: 0; transform: translateX(60px); }
+    .preview-box[data-anim="fade-right"] { opacity: 0; transform: translateX(-60px); }
+
+    .preview-box[data-anim="flip-left"] { opacity: 0; transform: perspective(800px) rotateY(-80deg); }
+    .preview-box[data-anim="flip-right"] { opacity: 0; transform: perspective(800px) rotateY(80deg); }
+    .preview-box[data-anim="flip-up"] { opacity: 0; transform: perspective(800px) rotateX(-80deg); }
+    .preview-box[data-anim="flip-down"] { opacity: 0; transform: perspective(800px) rotateX(80deg); }
+
+    .preview-box[data-anim="slide-up"] { opacity: 0; transform: translateY(100%); }
+    .preview-box[data-anim="slide-down"] { opacity: 0; transform: translateY(-100%); }
+    .preview-box[data-anim="slide-left"] { opacity: 0; transform: translateX(100%); }
+    .preview-box[data-anim="slide-right"] { opacity: 0; transform: translateX(-100%); }
+
+    .preview-box[data-anim="zoom-in"] { opacity: 0; transform: scale(0.4); }
+    .preview-box[data-anim="zoom-out"] { opacity: 0; transform: scale(1.4); }
+    .preview-box[data-anim="zoom-in-up"] { opacity: 0; transform: scale(0.4) translateY(60px); }
+    .preview-box[data-anim="zoom-out-down"] { opacity: 0; transform: scale(1.4) translateY(-60px); }
+
+    .preview-box[data-anim="rotate-in"] { opacity: 0; transform: rotate(-20deg) scale(0.6); }
+    .preview-box[data-anim="blur-in"] { opacity: 0; filter: blur(15px); }
+    .preview-box[data-anim="skew-in"] { opacity: 0; transform: skewX(-25deg) scale(0.8); }
+
+    .preview-box[data-anim="scale-x"] { opacity: 0; transform: scaleX(0); transform-origin: left; }
+    .preview-box[data-anim="scale-y"] { opacity: 0; transform: scaleY(0); transform-origin: top; }
+    .preview-box[data-anim="perspective-in"] { opacity: 0; transform: perspective(600px) rotateX(-50deg) scale(0.7); transform-origin: 50% 0; }
+
+    .preview-box[data-anim="bounce-in"] { opacity: 0; }
+    .preview-box[data-anim="bounce-in-up"] { opacity: 0; }
+    .preview-box[data-anim="bounce-in-down"] { opacity: 0; }
+    .preview-box[data-anim="bounce-in-left"] { opacity: 0; }
+    .preview-box[data-anim="bounce-in-right"] { opacity: 0; }
+
+    .preview-box[data-anim="back-in-up"] { opacity: 0; }
+    .preview-box[data-anim="back-in-down"] { opacity: 0; }
+    .preview-box[data-anim="back-in-left"] { opacity: 0; }
+    .preview-box[data-anim="back-in-right"] { opacity: 0; }
+
+    .preview-box[data-anim="bounce"] { opacity: 0; }
+    .preview-box[data-anim="flash"] { opacity: 0; }
+    .preview-box[data-anim="pulse"] { opacity: 0; }
+    .preview-box[data-anim="shake-x"] { opacity: 0; }
+    .preview-box[data-anim="shake-y"] { opacity: 0; }
+    .preview-box[data-anim="swing"] { opacity: 0; }
+    .preview-box[data-anim="heartbeat"] { opacity: 0; }
+    .preview-box[data-anim="jello"] { opacity: 0; }
+
+    .preview-box[data-anim="light-speed-in"] { opacity: 0; }
+    .preview-box[data-anim="light-speed-out"] { opacity: 0; }
+
+    .preview-box[data-anim="reveal-left"] { opacity: 0; clip-path: polygon(0 0, 0 0, 0 100%, 0 100%); }
+    .preview-box[data-anim="reveal-right"] { opacity: 0; clip-path: polygon(100% 0, 100% 0, 100% 100%, 100% 100%); }
+    .preview-box[data-anim="reveal-up"] { opacity: 0; clip-path: polygon(0 100%, 100% 100%, 100% 100%, 0 100%); }
+    .preview-box[data-anim="reveal-down"] { opacity: 0; clip-path: polygon(0 0, 100% 0, 100% 0, 0 0); }
+
+    .preview-box[data-anim="float"] { opacity: 0; }
+    .preview-box[data-anim="float-reverse"] { opacity: 0; }
+
+    .preview-box[data-anim="rotate-down-left"] { opacity: 0; }
+    .preview-box[data-anim="rotate-down-right"] { opacity: 0; }
+    .preview-box[data-anim="rotate-up-left"] { opacity: 0; }
+    .preview-box[data-anim="rotate-up-right"] { opacity: 0; }
+
+    .preview-box[data-anim="spring-up"] { opacity: 0; }
+    .preview-box[data-anim="spring-down"] { opacity: 0; }
+    .preview-box[data-anim="spring-left"] { opacity: 0; }
+    .preview-box[data-anim="spring-right"] { opacity: 0; }
+
+    .preview-box[data-anim="perspective-up"] { opacity: 0; }
+    .preview-box[data-anim="perspective-down"] { opacity: 0; }
+    .preview-box[data-anim="perspective-left"] { opacity: 0; }
+    .preview-box[data-anim="perspective-right"] { opacity: 0; }
+
+    .preview-box[data-anim="bounce-in"].is-visible { animation: a-bounce-in 0.8s ease both; }
+    .preview-box[data-anim="bounce-in-up"].is-visible { animation: a-bounce-in-up 0.9s ease both; }
+    .preview-box[data-anim="bounce-in-down"].is-visible { animation: a-bounce-in-down 0.9s ease both; }
+    .preview-box[data-anim="bounce-in-left"].is-visible { animation: a-bounce-in-left 0.9s ease both; }
+    .preview-box[data-anim="bounce-in-right"].is-visible { animation: a-bounce-in-right 0.9s ease both; }
+
+    .preview-box[data-anim="back-in-up"].is-visible { animation: a-back-in-up 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; }
+    .preview-box[data-anim="back-in-down"].is-visible { animation: a-back-in-down 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; }
+    .preview-box[data-anim="back-in-left"].is-visible { animation: a-back-in-left 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; }
+    .preview-box[data-anim="back-in-right"].is-visible { animation: a-back-in-right 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; }
+
+    .preview-box[data-anim="bounce"].is-visible { animation: a-bounce 1s ease both; }
+    .preview-box[data-anim="flash"].is-visible { animation: a-flash 1s ease both; }
+    .preview-box[data-anim="pulse"].is-visible { animation: a-pulse 1s ease both; }
+    .preview-box[data-anim="shake-x"].is-visible { animation: a-shake-x 0.8s ease both; }
+    .preview-box[data-anim="shake-y"].is-visible { animation: a-shake-y 0.8s ease both; }
+    .preview-box[data-anim="swing"].is-visible { animation: a-swing 1s ease both; }
+    .preview-box[data-anim="heartbeat"].is-visible { animation: a-heartbeat 1.2s ease both; }
+    .preview-box[data-anim="jello"].is-visible { animation: a-jello 1s ease both; }
+
+    .preview-box[data-anim="light-speed-in"].is-visible { animation: a-light-speed-in 0.7s ease-out both; }
+    .preview-box[data-anim="light-speed-out"].is-visible { animation: a-light-speed-out 0.6s ease-in both; }
+
+    .preview-box[data-anim="float"].is-visible { animation: a-float 3s ease-in-out infinite both; }
+    .preview-box[data-anim="float-reverse"].is-visible { animation: a-float-reverse 3s ease-in-out infinite both; }
+
+    .preview-box[data-anim="rotate-down-left"].is-visible { animation: a-rotate-down-left 0.7s ease both; transform-origin: bottom left; }
+    .preview-box[data-anim="rotate-down-right"].is-visible { animation: a-rotate-down-right 0.7s ease both; transform-origin: bottom right; }
+    .preview-box[data-anim="rotate-up-left"].is-visible { animation: a-rotate-up-left 0.7s ease both; transform-origin: top left; }
+    .preview-box[data-anim="rotate-up-right"].is-visible { animation: a-rotate-up-right 0.7s ease both; transform-origin: top right; }
+
+    .preview-box[data-anim="spring-up"].is-visible { animation: a-spring-up 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; }
+    .preview-box[data-anim="spring-down"].is-visible { animation: a-spring-down 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; }
+    .preview-box[data-anim="spring-left"].is-visible { animation: a-spring-left 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; }
+    .preview-box[data-anim="spring-right"].is-visible { animation: a-spring-right 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; }
+
+    .preview-box[data-anim="perspective-up"].is-visible { animation: a-perspective-up 0.7s ease both; }
+    .preview-box[data-anim="perspective-down"].is-visible { animation: a-perspective-down 0.7s ease both; }
+    .preview-box[data-anim="perspective-left"].is-visible { animation: a-perspective-left 0.7s ease both; }
+    .preview-box[data-anim="perspective-right"].is-visible { animation: a-perspective-right 0.7s ease both; }
+
+    /* ── DEMO BOXES ── */
+    .demo-showcase {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .demo-box {
+      aspect-ratio: 1;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+      font-weight: 600;
+      color: #fff;
+      text-align: center;
+      padding: 0.75rem;
+      position: relative;
+      overflow: hidden;
+      cursor: default;
+    }
+
+    .demo-box .label {
+      position: relative;
+      z-index: 1;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+
+    .demo-box[data-aos]::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.06);
+      pointer-events: none;
+    }
+
+    .box-purple { background: linear-gradient(135deg, #7c3aed, #a855f7); }
+    .box-pink { background: linear-gradient(135deg, #ec4899, #f472b6); }
+    .box-orange { background: linear-gradient(135deg, #f59e0b, #fbbf24); }
+    .box-green { background: linear-gradient(135deg, #10b981, #34d399); }
+    .box-cyan { background: linear-gradient(135deg, #06b6d4, #22d3ee); }
+    .box-red { background: linear-gradient(135deg, #ef4444, #f87171); }
+    .box-indigo { background: linear-gradient(135deg, #4f46e5, #6366f1); }
+    .box-rose { background: linear-gradient(135deg, #f43f5e, #fb7185); }
+
+    /* ── CONFIG CARDS ── */
+    .config-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .config-item {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 16px;
+      padding: 1.75rem;
+      transition: border-color 0.3s;
+    }
+
+    .config-item:hover {
+      border-color: rgba(124,58,237,0.15);
+    }
+
+    .config-item .attr {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.7rem;
+      color: #a78bfa;
+      background: rgba(124,58,237,0.08);
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      border-radius: 6px;
+      margin-bottom: 0.75rem;
+    }
+
+    .config-item h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 0.3rem;
+    }
+
+    .config-item p {
+      font-size: 0.8rem;
+      color: #555;
+      line-height: 1.5;
+    }
+
+    /* ── CODE ── */
+    .code-block {
+      background: #0c0c14;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 16px;
+      padding: 2rem;
+      overflow-x: auto;
+      position: relative;
+    }
+
+    .code-block .dots {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 1.25rem;
+    }
+
+    .code-block .dots span {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .code-block .dots span:nth-child(1) { background: #ff5f56; }
+    .code-block .dots span:nth-child(2) { background: #ffbd2e; }
+    .code-block .dots span:nth-child(3) { background: #27c93f; }
+
+    .code-block code {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.82rem;
+      line-height: 1.8;
+      color: #a5b4fc;
+    }
+
+    .code-block .comment { color: #4a5568; }
+    .code-block .tag { color: #f472b6; }
+    .code-block .attr { color: #a78bfa; }
+    .code-block .string { color: #34d399; }
+    .code-block .keyword { color: #f59e0b; }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: #333;
+      font-size: 0.8rem;
+      border-top: 1px solid rgba(255,255,255,0.04);
+      margin-top: 2rem;
+    }
+
+    footer a {
+      color: #7c3aed;
+      text-decoration: none;
+    }
+
+    /* ── RESPONSIVE ── */
+    .test-btn {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: linear-gradient(135deg, #7c3aed, #a855f7);
+      color: #fff;
+      border: none;
+      padding: 0.85rem 1.5rem;
+      border-radius: 100px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 8px 32px rgba(124,58,237,0.35);
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      font-family: inherit;
+      letter-spacing: 0.01em;
+    }
+
+    .test-btn:hover {
+      transform: scale(1.05) translateY(-2px);
+      box-shadow: 0 12px 48px rgba(124,58,237,0.5);
+    }
+
+    .test-btn:active {
+      transform: scale(0.95);
+    }
+
+    .test-btn .count {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255,255,255,0.2);
+      border-radius: 100px;
+      padding: 0.15rem 0.55rem;
+      font-size: 0.7rem;
+      font-weight: 700;
+      min-width: 22px;
+    }
+
+    .test-btn .icon {
+      font-size: 1.1rem;
+      line-height: 1;
+    }
+
+    .test-btn-shake {
+      animation: shake 0.5s ease-in-out;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      10% { transform: translateX(-4px) rotate(-2deg); }
+      20% { transform: translateX(4px) rotate(2deg); }
+      30% { transform: translateX(-4px) rotate(-2deg); }
+      40% { transform: translateX(4px) rotate(2deg); }
+      50% { transform: translateX(-2px) rotate(-1deg); }
+      60% { transform: translateX(2px) rotate(1deg); }
+      70% { transform: translateX(-1px); }
+      80% { transform: translateX(1px); }
+      90% { transform: translateX(-1px); }
+    }
+
+    @media (max-width: 768px) {
+      section { padding: 5rem 1.25rem; }
+      .hero h1 { font-size: clamp(2.5rem, 15vw, 5rem); }
+      .preview-grid { grid-template-columns: 1fr; }
+      .config-grid { grid-template-columns: 1fr; }
+      .demo-showcase { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 0.75rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="noise"></div>
+  <div class="cursor-glow" id="cursorGlow"></div>
+
+  <header class="hero">
+    <div class="hero-grid"></div>
+
+    <div class="hero-badge" data-aos="fade-down" data-aos-duration="800">
+      <span></span>
+      v1.0 — 99 Animations
+    </div>
+
+    <h1 data-aos="fade-up" data-aos-duration="1000" data-aos-delay="100">
+      <span class="outline">Animate</span><br>
+      <span class="gradient">Everything</span>
+    </h1>
+
+    <p data-aos="fade-up" data-aos-duration="1000" data-aos-delay="300">
+      99 scroll-triggered animations across 19 categories. Fade, flip, slide, zoom, bounce, reveal, back, light speed, spring, glide, perspective, rotate, fold, stretch — everything, zero dependencies.
+    </p>
+
+    <div class="hero-actions" data-aos="fade-up" data-aos-duration="1000" data-aos-delay="500">
+      <a href="#demos" class="btn btn-primary">
+        See Demos
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </a>
+      <a href="docs.html" class="btn btn-secondary">
+        Docs
+      </a>
+      <a href="#usage" class="btn btn-secondary">
+        Get Started
+      </a>
+    </div>
+
+    <div class="scroll-hint" data-aos="fade-up" data-aos-duration="800" data-aos-delay="800">
+      <div class="mouse"></div>
+      <span>Scroll</span>
+    </div>
+  </header>
+
+  <div class="section-divider"></div>
+
+  <section id="demos">
+    <div class="section-label" data-aos="fade-up">Interactive Preview</div>
+    <h2 data-aos="fade-up">Try any animation<br>right now</h2>
+    <p class="subtitle" data-aos="fade-up" data-aos-delay="100">Pick an animation and hit <span style="color:#a78bfa;">Play</span> to see it in action instantly.</p>
+
+    <div class="preview-grid">
+      <div class="preview-card" data-aos="fade-up">
+        <div class="preview-stage">
+          <div class="preview-box box-purple" data-anim="fade-in"></div>
+        </div>
+        <h3>Fade</h3>
+        <div class="pills">
+          <button class="pill active" data-anim="fade-in">in</button>
+          <button class="pill" data-anim="fade-up">up</button>
+          <button class="pill" data-anim="fade-down">down</button>
+          <button class="pill" data-anim="fade-left">left</button>
+          <button class="pill" data-anim="fade-right">right</button>
+        </div>
+        <button class="play-btn">&#9654; Play</button>
+      </div>
+
+      <div class="preview-card" data-aos="fade-up" data-aos-delay="60">
+        <div class="preview-stage">
+          <div class="preview-box box-pink" data-anim="flip-left"></div>
+        </div>
+        <h3>Flip</h3>
+        <div class="pills">
+          <button class="pill active" data-anim="flip-left">left</button>
+          <button class="pill" data-anim="flip-right">right</button>
+          <button class="pill" data-anim="flip-up">up</button>
+          <button class="pill" data-anim="flip-down">down</button>
+        </div>
+        <button class="play-btn">&#9654; Play</button>
+      </div>
+
+      <div class="preview-card" data-aos="fade-up" data-aos-delay="120">
+        <div class="preview-stage">
+          <div class="preview-box box-orange" data-anim="slide-up"></div>
+        </div>
+        <h3>Slide</h3>
+        <div class="pills">
+          <button class="pill active" data-anim="slide-up">up</button>
+          <button class="pill" data-anim="slide-down">down</button>
+          <button class="pill" data-anim="slide-left">left</button>
+          <button class="pill" data-anim="slide-right">right</button>
+        </div>
+        <button class="play-btn">&#9654; Play</button>
+      </div>
+
+      <div class="preview-card" data-aos="fade-up" data-aos-delay="180">
+        <div class="preview-stage">
+          <div class="preview-box box-green" data-anim="zoom-in"></div>
+        </div>
+        <h3>Zoom</h3>
+        <div class="pills">
+          <button class="pill active" data-anim="zoom-in">in</button>
+          <button class="pill" data-anim="zoom-out">out</button>
+          <button class="pill" data-anim="zoom-in-up">in-up</button>
+          <button class="pill" data-anim="zoom-out-down">out-down</button>
+        </div>
+        <button class="play-btn">&#9654; Play</button>
+      </div>
+
+      <div class="preview-card" data-aos="fade-up" data-aos-delay="240">
+        <div class="preview-stage">
+          <div class="preview-box box-cyan" data-anim="rotate-in"></div>
+        </div>
+        <h3>Special</h3>
+        <div class="pills">
+          <button class="pill active" data-anim="rotate-in">rotate</button>
+          <button class="pill" data-anim="blur-in">blur</button>
+          <button class="pill" data-anim="skew-in">skew</button>
+        </div>
+        <button class="play-btn">&#9654; Play</button>
+      </div>
+
+      <div class="preview-card" data-aos="fade-up" data-aos-delay="300">
+        <div class="preview-stage">
+          <div class="preview-box box-indigo" data-anim="scale-x"></div>
+        </div>
+        <h3>Extra</h3>
+        <div class="pills">
+          <button class="pill active" data-anim="scale-x">scale-x</button>
+          <button class="pill" data-anim="scale-y">scale-y</button>
+          <button class="pill" data-anim="perspective-in">perspective</button>
+        </div>
+        <button class="play-btn">&#9654; Play</button>
+      </div>
+
+      <div class="preview-card" data-aos="fade-up" data-aos-delay="360">
+        <div class="preview-stage">
+          <div class="preview-box box-red" data-anim="bounce-in"></div>
+        </div>
+        <h3>Bounce</h3>
+        <div class="pills">
+          <button class="pill active" data-anim="bounce-in">in</button>
+          <button class="pill" data-anim="bounce-in-up">up</button>
+          <button class="pill" data-anim="bounce-in-down">down</button>
+          <button class="pill" data-anim="bounce-in-left">left</button>
+          <button class="pill" data-anim="bounce-in-right">right</button>
+        </div>
+        <button class="play-btn">&#9654; Play</button>
+      </div>
+
+      <div class="preview-card" data-aos="fade-up" data-aos-delay="420">
+        <div class="preview-stage">
+          <div class="preview-box box-rose" data-anim="back-in-up"></div>
+        </div>
+        <h3>Back</h3>
+        <div class="pills">
+          <button class="pill active" data-anim="back-in-up">up</button>
+          <button class="pill" data-anim="back-in-down">down</button>
+          <button class="pill" data-anim="back-in-left">left</button>
+          <button class="pill" data-anim="back-in-right">right</button>
+        </div>
+        <button class="play-btn">&#9654; Play</button>
+      </div>
+
+      <div class="preview-card" data-aos="fade-up" data-aos-delay="480">
+        <div class="preview-stage">
+          <div class="preview-box box-cyan" data-anim="bounce"></div>
+        </div>
+        <h3>Attention</h3>
+        <div class="pills">
+          <button class="pill active" data-anim="bounce">bounce</button>
+          <button class="pill" data-anim="flash">flash</button>
+          <button class="pill" data-anim="pulse">pulse</button>
+          <button class="pill" data-anim="shake-x">shake-x</button>
+          <button class="pill" data-anim="heartbeat">heartbeat</button>
+        </div>
+        <button class="play-btn">&#9654; Play</button>
+      </div>
+
+      <div class="preview-card" data-aos="fade-up" data-aos-delay="540">
+        <div class="preview-stage">
+          <div class="preview-box box-purple" data-anim="reveal-left"></div>
+        </div>
+        <h3>Reveal</h3>
+        <div class="pills">
+          <button class="pill active" data-anim="reveal-left">left</button>
+          <button class="pill" data-anim="reveal-right">right</button>
+          <button class="pill" data-anim="reveal-up">up</button>
+          <button class="pill" data-anim="reveal-down">down</button>
+        </div>
+        <button class="play-btn">&#9654; Play</button>
+      </div>
+
+      <div class="preview-card" data-aos="fade-up" data-aos-delay="600">
+        <div class="preview-stage">
+          <div class="preview-box box-rose" data-anim="rotate-down-left"></div>
+        </div>
+        <h3>Rotate</h3>
+        <div class="pills">
+          <button class="pill active" data-anim="rotate-down-left">d-left</button>
+          <button class="pill" data-anim="rotate-down-right">d-right</button>
+          <button class="pill" data-anim="rotate-up-left">u-left</button>
+          <button class="pill" data-anim="rotate-up-right">u-right</button>
+        </div>
+        <button class="play-btn">&#9654; Play</button>
+      </div>
+
+      <div class="preview-card" data-aos="fade-up" data-aos-delay="660">
+        <div class="preview-stage">
+          <div class="preview-box box-green" data-anim="spring-up"></div>
+        </div>
+        <h3>Spring</h3>
+        <div class="pills">
+          <button class="pill active" data-anim="spring-up">up</button>
+          <button class="pill" data-anim="spring-down">down</button>
+          <button class="pill" data-anim="spring-left">left</button>
+          <button class="pill" data-anim="spring-right">right</button>
+        </div>
+        <button class="play-btn">&#9654; Play</button>
+      </div>
+
+      <div class="preview-card" data-aos="fade-up" data-aos-delay="720">
+        <div class="preview-stage">
+          <div class="preview-box box-indigo" data-anim="perspective-up"></div>
+        </div>
+        <h3>Perspective</h3>
+        <div class="pills">
+          <button class="pill active" data-anim="perspective-up">up</button>
+          <button class="pill" data-anim="perspective-down">down</button>
+          <button class="pill" data-anim="perspective-left">left</button>
+          <button class="pill" data-anim="perspective-right">right</button>
+        </div>
+        <button class="play-btn">&#9654; Play</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <section>
+    <div class="section-label" data-aos="fade-up">Visual Demo</div>
+    <h2 data-aos="fade-up">See them in motion</h2>
+    <p class="subtitle" data-aos="fade-up" data-aos-delay="100">Each box below uses a different <code style="color:#a78bfa;background:rgba(124,58,237,0.1);padding:0.1rem 0.4rem;border-radius:4px;font-size:0.85rem;">data-aos</code> value.</p>
+
+    <div class="demo-showcase">
+      <div class="demo-box box-purple" data-aos="fade-in"><span class="label">fade-in</span></div>
+      <div class="demo-box box-pink" data-aos="fade-up"><span class="label">fade-up</span></div>
+      <div class="demo-box box-orange" data-aos="fade-down"><span class="label">fade-down</span></div>
+      <div class="demo-box box-green" data-aos="fade-left"><span class="label">fade-left</span></div>
+      <div class="demo-box box-cyan" data-aos="fade-right"><span class="label">fade-right</span></div>
+      <div class="demo-box box-indigo" data-aos="flip-left"><span class="label">flip-left</span></div>
+      <div class="demo-box box-rose" data-aos="flip-right"><span class="label">flip-right</span></div>
+      <div class="demo-box box-purple" data-aos="flip-up"><span class="label">flip-up</span></div>
+      <div class="demo-box box-pink" data-aos="flip-down"><span class="label">flip-down</span></div>
+      <div class="demo-box box-orange" data-aos="zoom-in"><span class="label">zoom-in</span></div>
+      <div class="demo-box box-green" data-aos="zoom-out"><span class="label">zoom-out</span></div>
+      <div class="demo-box box-cyan" data-aos="slide-up"><span class="label">slide-up</span></div>
+      <div class="demo-box box-indigo" data-aos="slide-right"><span class="label">slide-right</span></div>
+      <div class="demo-box box-rose" data-aos="rotate-in"><span class="label">rotate-in</span></div>
+      <div class="demo-box box-purple" data-aos="blur-in"><span class="label">blur-in</span></div>
+      <div class="demo-box box-pink" data-aos="skew-in"><span class="label">skew-in</span></div>
+      <div class="demo-box box-orange" data-aos="scale-x"><span class="label">scale-x</span></div>
+      <div class="demo-box box-green" data-aos="scale-y"><span class="label">scale-y</span></div>
+      <div class="demo-box box-cyan" data-aos="perspective-in"><span class="label">perspective-in</span></div>
+      <div class="demo-box box-indigo" data-aos="elastic-up"><span class="label">elastic-up</span></div>
+    </div>
+
+    <div style="text-align:center;margin-top:3rem" data-aos="fade-up">
+      <a href="animations.html" class="btn btn-primary" style="text-decoration:none">
+        Browse All Animations &rarr;
+      </a>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <section>
+    <div class="section-label" data-aos="fade-up">Configuration</div>
+    <h2 data-aos="fade-up">Fine-tune every detail</h2>
+    <p class="subtitle" data-aos="fade-up" data-aos-delay="100">Control timing, easing, trigger point, and behaviour with data attributes.</p>
+
+    <div class="config-grid">
+      <div class="config-item" data-aos="fade-up">
+        <span class="attr">data-aos-duration</span>
+        <h3>Duration</h3>
+        <p>Animation length in milliseconds. Values: 50–3000ms. Default: 600ms.</p>
+      </div>
+      <div class="config-item" data-aos="fade-up" data-aos-delay="60">
+        <span class="attr">data-aos-delay</span>
+        <h3>Delay</h3>
+        <p>Stagger delay before the animation starts. Values: 50–3000ms. Default: 0ms.</p>
+      </div>
+      <div class="config-item" data-aos="fade-up" data-aos-delay="120">
+        <span class="attr">data-aos-easing</span>
+        <h3>Easing</h3>
+        <p>CSS easing curve. Options: ease, ease-out-cubic, ease-out-quart, ease-out-back, etc.</p>
+      </div>
+      <div class="config-item" data-aos="fade-up" data-aos-delay="180">
+        <span class="attr">data-aos-offset</span>
+        <h3>Offset</h3>
+        <p>Trigger offset in pixels. Higher = animates earlier. Default: 120px.</p>
+      </div>
+      <div class="config-item" data-aos="fade-up" data-aos-delay="240">
+        <span class="attr">data-aos-once</span>
+        <h3>Once</h3>
+        <p>Animate only the first time. Set any value (e.g. <code style="color:#a78bfa;">data-aos-once</code>) to enable.</p>
+      </div>
+      <div class="config-item" data-aos="fade-up" data-aos-delay="300">
+        <span class="attr">data-aos-mirror</span>
+        <h3>Mirror</h3>
+        <p>Re-trigger animation when scrolling back up. Set any value to enable.</p>
+      </div>
+      <div class="config-item" data-aos="fade-up" data-aos-delay="360">
+        <span class="attr">data-aos-anchor-placement</span>
+        <h3>Anchor Placement</h3>
+        <p>Defines the trigger point. Format: <code style="color:#a78bfa;">{el}-{viewport}</code>. Options: top-bottom (default), center-center, bottom-bottom, top-center, etc.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <section id="usage">
+    <div class="section-label" data-aos="fade-up">Get Started</div>
+    <h2 data-aos="fade-up">Add to your project<br>in seconds</h2>
+    <p class="subtitle" data-aos="fade-up" data-aos-delay="100">Drop in two files, add an attribute, and you're done.</p>
+
+    <div class="code-block" data-aos="fade-up">
+      <div class="dots">
+        <span></span><span></span><span></span>
+      </div>
+      <code>
+        <span class="comment">&lt;!-- 1. Include CSS and JS --></span><br>
+        <span class="tag">&lt;link</span> <span class="attr">rel=</span><span class="string">"stylesheet"</span> <span class="attr">href=</span><span class="string">"flux.css"</span><span class="tag">&gt;</span><br>
+        <span class="tag">&lt;script</span> <span class="attr">src=</span><span class="string">"flux.js"</span><span class="tag">&gt;&lt;/script&gt;</span><br>
+        <br>
+        <span class="comment">&lt;!-- 2. Animate any element --></span><br>
+        <span class="tag">&lt;div</span> <span class="attr">data-aos=</span><span class="string">"fade-up"</span><span class="tag">&gt;</span><br>
+        &nbsp;&nbsp;<span class="tag">&lt;h1&gt;</span>Hello World<span class="tag">&lt;/h1&gt;</span><br>
+        <span class="tag">&lt;/div&gt;</span><br>
+        <br>
+        <span class="comment">&lt;!-- 3. Customize --></span><br>
+        <span class="tag">&lt;div</span><br>
+        &nbsp;&nbsp;<span class="attr">data-aos=</span><span class="string">"zoom-in"</span><br>
+        &nbsp;&nbsp;<span class="attr">data-aos-duration=</span><span class="string">"800"</span><br>
+        &nbsp;&nbsp;<span class="attr">data-aos-delay=</span><span class="string">"200"</span><br>
+        &nbsp;&nbsp;<span class="attr">data-aos-easing=</span><span class="string">"ease-out-back"</span><span class="tag">&gt;</span><br>
+        &nbsp;&nbsp;Animated content<br>
+        <span class="tag">&lt;/div&gt;</span>
+      </code>
+    </div>
+
+    <div class="code-block" style="margin-top:1.5rem" data-aos="fade-up" data-aos-delay="100">
+      <code>
+        <span class="comment">// Optional: init with custom global defaults</span><br>
+        <span class="keyword">Flux</span>.init({<br>
+        &nbsp;&nbsp;offset: <span class="string">100</span>,<br>
+        &nbsp;&nbsp;duration: <span class="string">600</span>,<br>
+        &nbsp;&nbsp;easing: <span class="string">'ease-out-cubic'</span>,<br>
+        &nbsp;&nbsp;once: <span class="string">false</span>,<br>
+        &nbsp;&nbsp;mirror: <span class="string">false</span>,<br>
+        &nbsp;&nbsp;anchorPlacement: <span class="string">'top-bottom'</span><br>
+        });
+      </code>
+    </div>
+  </section>
+
+  <button class="test-btn" id="animateBtn" title="Replay all animations">
+    <span class="icon">&#9654;</span>
+    Test Animations
+    <span class="count" id="replayCount">0</span>
+  </button>
+
+  <footer>
+    <p>Built with <span style="color:#ec4899;">&#9829;</span> by <a href="#">Flux</a> &mdash; Zero-dependency animation library</p>
+  </footer>
+
+  <script>
+    const glow = document.getElementById('cursorGlow');
+    document.addEventListener('mousemove', (e) => {
+      glow.style.left = e.clientX + 'px';
+      glow.style.top = e.clientY + 'px';
+    });
+
+    document.querySelectorAll('.preview-card').forEach(function(card) {
+      var pills = card.querySelectorAll('.pill');
+      var box = card.querySelector('.preview-box');
+      var playBtn = card.querySelector('.play-btn');
+
+      pills.forEach(function(pill) {
+        pill.addEventListener('click', function() {
+          pills.forEach(function(p) { p.classList.remove('active'); });
+          pill.classList.add('active');
+          box.classList.remove('is-visible');
+          box.setAttribute('data-anim', pill.getAttribute('data-anim'));
+        });
+      });
+
+      playBtn.addEventListener('click', function() {
+        box.classList.remove('is-visible');
+        box.style.animation = 'none';
+        void box.offsetHeight;
+        box.style.animation = '';
+        setTimeout(function () {
+          box.classList.add('is-visible');
+        }, 10);
+      });
+
+      var firstPill = card.querySelector('.pill.active');
+      if (firstPill) {
+        box.setAttribute('data-anim', firstPill.getAttribute('data-anim'));
+      }
+    });
+  </script>
+  <script>
+    (function() {
+      var btn = document.getElementById('animateBtn');
+      var countEl = document.getElementById('replayCount');
+      var count = 0;
+
+      btn.addEventListener('click', function() {
+        btn.classList.remove('test-btn-shake');
+        void btn.offsetWidth;
+        btn.classList.add('test-btn-shake');
+
+        if (typeof Flux !== 'undefined' && Flux.replay) {
+          Flux.replay();
+        }
+
+        count++;
+        countEl.textContent = count;
+      });
+    })();
+  </script>
+  <script src="flux.js"></script>
+</body>
+</html>
