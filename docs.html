@@ -283,6 +283,7 @@
         <div class="nav-label">API</div>
         <a href="#api">Methods</a>
         <a href="#easing">Easing</a>
+        <a href="#advanced">Advanced</a>
 
         <div class="nav-label">Animations</div>
         <a href="#cats">All Categories</a>
@@ -362,6 +363,30 @@
   <span class="at">data-aos-once</span>
 <span class="tg">&gt;</span>Animated content<span class="tg">&lt;/div&gt;</span></code></pre>
 
+      <pre><code><span class="cm">&lt;!-- With presets --></span>
+<span class="tg">&lt;div</span> <span class="at">data-aos-preset=</span><span class="st">"smooth"</span><span class="tg">&gt;</span>Preset animation<span class="tg">&lt;/div&gt;</span>
+
+<span class="cm">&lt;!-- With stagger (parent wraps children) --></span>
+<span class="tg">&lt;div</span> <span class="at">data-aos-stagger=</span><span class="st">"100"</span><span class="tg">&gt;</span>
+  <span class="tg">&lt;div</span> <span class="at">data-aos=</span><span class="st">"fade-up"</span><span class="tg">&gt;</span>Item 1<span class="tg">&lt;/div&gt;</span>
+  <span class="tg">&lt;div</span> <span class="at">data-aos=</span><span class="st">"fade-up"</span><span class="tg">&gt;</span>Item 2<span class="tg">&lt;/div&gt;</span>
+  <span class="tg">&lt;div</span> <span class="at">data-aos=</span><span class="st">"fade-up"</span><span class="tg">&gt;</span>Item 3<span class="tg">&lt;/div&gt;</span>
+<span class="tg">&lt;/div&gt;</span>
+
+<span class="cm">&lt;!-- Groups trigger together --></span>
+<span class="tg">&lt;div</span> <span class="at">data-aos=</span><span class="st">"fade-up"</span> <span class="at">data-aos-group=</span><span class="st">"hero"</span><span class="tg">&gt;</span>Child A<span class="tg">&lt;/div&gt;</span>
+<span class="tg">&lt;div</span> <span class="at">data-aos=</span><span class="st">"fade-down"</span> <span class="at">data-aos-group=</span><span class="st">"hero"</span><span class="tg">&gt;</span>Child B<span class="tg">&lt;/div&gt;</span>
+
+<span class="cm">&lt;!-- Animate out when leaving viewport --></span>
+<span class="tg">&lt;div</span> <span class="at">data-aos=</span><span class="st">"fade-up"</span> <span class="at">data-aos-animate-out=</span><span class="st">"true"</span><span class="tg">&gt;</span>Content<span class="tg">&lt;/div&gt;</span>
+
+<span class="cm">&lt;!-- Callbacks --></span>
+<span class="tg">&lt;div</span>
+  <span class="at">data-aos=</span><span class="st">"zoom-in"</span>
+  <span class="at">data-aos-on-start=</span><span class="st">"myStartFunc()"</span>
+  <span class="at">data-aos-on-end=</span><span class="st">"myEndFunc()"</span>
+<span class="tg">&gt;</span>Content<span class="tg">&lt;/div&gt;</span></code></pre>
+
       <p>To customize global defaults, call <code>Flux.init()</code> with options:</p>
 
       <pre><code><span class="tg">&lt;script&gt;</span>
@@ -371,7 +396,11 @@
     easing: <span class="st">'ease-out-cubic'</span>,
     once: <span class="st">false</span>,
     mirror: <span class="st">false</span>,
-    anchorPlacement: <span class="st">'top-bottom'</span>
+    anchorPlacement: <span class="st">'top-bottom'</span>,
+    stagger: <span class="st">50</span>,
+    debug: <span class="st">false</span>,
+    disable: <span class="st">false</span>,
+    presets: { <span class="st">myCustom: { animation: 'fade-up', duration: 1000 }</span> }
   });
 <span class="tg">&lt;/script&gt;</span></code></pre>
 
@@ -428,6 +457,41 @@
             <td>Trigger point: <code>{el}-{viewport}</code>. Options: <code>top-bottom</code>, <code>center-center</code>, <code>bottom-bottom</code>, <code>top-center</code>, <code>bottom-center</code>, etc.</td>
             <td>top-bottom</td>
           </tr>
+          <tr>
+            <td>data-aos-preset</td>
+            <td>Quick preset: subtle, smooth, dramatic, bouncy, energetic, reveal, focus, floaty</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td>data-aos-anchor</td>
+            <td>CSS selector for the anchor element (triggers when anchor scrolls in)</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td>data-aos-group</td>
+            <td>Group name — all elements in the same group animate together</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td>data-aos-stagger</td>
+            <td>Set on a parent to stagger children by N ms each</td>
+            <td>0</td>
+          </tr>
+          <tr>
+            <td>data-aos-animate-out</td>
+            <td>Remove the animate class when the element scrolls back out of view</td>
+            <td>false</td>
+          </tr>
+          <tr>
+            <td>data-aos-on-start</td>
+            <td>JavaScript callback function name when animation starts</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td>data-aos-on-end</td>
+            <td>JavaScript callback function name when animation ends</td>
+            <td>—</td>
+          </tr>
         </tbody>
       </table>
 
@@ -458,6 +522,90 @@
         <div class="sig">Flux.destroy()</div>
         <p>Clean up all observers and remove event listeners.</p>
       </div>
+
+      <div class="method-box">
+        <div class="sig">Flux.debug(show)</div>
+        <p>Toggle the debug overlay. Pass <code>true</code> or <code>false</code> to force show/hide, or call with no argument to toggle. Keyboard shortcut: <code>Ctrl+Shift+D</code> (when debug is enabled in init options).</p>
+      </div>
+
+      <h2 id="advanced">Advanced Features</h2>
+
+      <h3 id="adv-presets">Presets</h3>
+      <p>Built-in presets let you skip individual attributes and get a complete animation look with one attribute:</p>
+      <pre><code><span class="cm">&lt;!-- Each preset sets animation, duration, and easing in one go --></span>
+<span class="tg">&lt;div</span> <span class="at">data-aos-preset=</span><span class="st">"smooth"</span><span class="tg">&gt;</span>Smooth entrance<span class="tg">&lt;/div&gt;</span>
+<span class="tg">&lt;div</span> <span class="at">data-aos-preset=</span><span class="st">"dramatic"</span><span class="tg">&gt;</span>Dramatic entrance<span class="tg">&lt;/div&gt;</span>
+<span class="tg">&lt;div</span> <span class="at">data-aos-preset=</span><span class="st">"bouncy"</span><span class="tg">&gt;</span>Bouncy entrance<span class="tg">&lt;/div&gt;</span></code></pre>
+
+      <table class="attr-table">
+        <thead><tr><th>Preset</th><th>Animation</th><th>Duration</th><th>Easing</th></tr></thead>
+        <tbody>
+          <tr><td>subtle</td><td>fade-up</td><td>400</td><td>ease</td></tr>
+          <tr><td>smooth</td><td>fade-up</td><td>800</td><td>ease-out-cubic</td></tr>
+          <tr><td>dramatic</td><td>zoom-in</td><td>800</td><td>ease-out-back</td></tr>
+          <tr><td>bouncy</td><td>bounce-in</td><td>900</td><td>ease-out-cubic</td></tr>
+          <tr><td>energetic</td><td>spring-up</td><td>800</td><td>ease-out-cubic</td></tr>
+          <tr><td>reveal</td><td>reveal-left</td><td>700</td><td>ease</td></tr>
+          <tr><td>focus</td><td>zoom-in</td><td>600</td><td>ease-out-quart</td></tr>
+          <tr><td>floaty</td><td>float</td><td>1200</td><td>ease</td></tr>
+        </tbody>
+      </table>
+
+      <h3 id="adv-stagger">Stagger</h3>
+      <p>Add <code>data-aos-stagger</code> to a parent element to automatically delay each child animation by N ms:</p>
+      <pre><code><span class="cm">&lt;!-- Each child animates 100ms after the previous one --></span>
+<span class="tg">&lt;div</span> <span class="at">data-aos-stagger=</span><span class="st">"100"</span><span class="tg">&gt;</span>
+  <span class="tg">&lt;div</span> <span class="at">data-aos=</span><span class="st">"fade-up"</span><span class="tg">&gt;</span>Item 1<span class="tg">&lt;/div&gt;</span>
+  <span class="tg">&lt;div</span> <span class="at">data-aos=</span><span class="st">"fade-up"</span><span class="tg">&gt;</span>Item 2<span class="tg">&lt;/div&gt;</span>
+  <span class="tg">&lt;div</span> <span class="at">data-aos=</span><span class="st">"fade-up"</span><span class="tg">&gt;</span>Item 3<span class="tg">&lt;/div&gt;</span>
+<span class="tg">&lt;/div&gt;</span></code></pre>
+
+      <h3 id="adv-groups">Animation Groups</h3>
+      <p>Elements sharing the same <code>data-aos-group</code> value will all animate simultaneously once any one of them is triggered:</p>
+      <pre><code><span class="tg">&lt;div</span> <span class="at">data-aos=</span><span class="st">"fade-up"</span> <span class="at">data-aos-group=</span><span class="st">"hero"</span><span class="tg">&gt;</span>Title<span class="tg">&lt;/div&gt;</span>
+<span class="tg">&lt;div</span> <span class="at">data-aos=</span><span class="st">"fade-down"</span> <span class="at">data-aos-group=</span><span class="st">"hero"</span><span class="tg">&gt;</span>Subtitle<span class="tg">&lt;/div&gt;</span></code></pre>
+
+      <h3 id="adv-anchor">Anchor Reference</h3>
+      <p>Trigger an animation based on a different element's position using <code>data-aos-anchor</code>:</p>
+      <pre><code><span class="cm">&lt;!-- This element animates when #trigger scrolls into view --></span>
+<span class="tg">&lt;div</span> <span class="at">id=</span><span class="st">"trigger"</span><span class="tg">&gt;&lt;/div&gt;</span>
+<span class="tg">&lt;div</span> <span class="at">data-aos=</span><span class="st">"fade-up"</span> <span class="at">data-aos-anchor=</span><span class="st">"#trigger"</span><span class="tg">&gt;</span>Animated<span class="tg">&lt;/div&gt;</span></code></pre>
+
+      <h3 id="adv-animate-out">Animate Out</h3>
+      <p>By default, elements keep their animated state once triggered. Add <code>data-aos-animate-out</code> to remove the class when the element scrolls back out of view:</p>
+      <pre><code><span class="tg">&lt;div</span> <span class="at">data-aos=</span><span class="st">"fade-up"</span> <span class="at">data-aos-animate-out</span><span class="tg">&gt;</span>Fades back out when leaving viewport<span class="tg">&lt;/div&gt;</span></code></pre>
+
+      <h3 id="adv-callbacks">Callbacks</h3>
+      <p>Execute JavaScript functions when an animation starts or ends. The value is a function name or inline expression:</p>
+      <pre><code><span class="tg">&lt;script&gt;</span>
+  <span class="kw">function</span> <span class="st">onEnter</span>() { console.log('Entered viewport!'); }
+  <span class="kw">function</span> <span class="st">onLeave</span>() { console.log('Animation complete!'); }
+<span class="tg">&lt;/script&gt;</span>
+<span class="tg">&lt;div</span> <span class="at">data-aos=</span><span class="st">"fade-up"</span>
+     <span class="at">data-aos-on-start=</span><span class="st">"onEnter"</span>
+     <span class="at">data-aos-on-end=</span><span class="st">"onLeave"</span><span class="tg">&gt;</span>Content<span class="tg">&lt;/div&gt;</span></code></pre>
+
+      <h3 id="adv-disable">Responsive Disable</h3>
+      <p>Globally disable Flux on specific screen sizes via the <code>disable</code> init option or set <code>true</code> to disable entirely:</p>
+      <pre><code><span class="kw">Flux</span>.init({
+  disable: <span class="st">'mobile'</span>                   <span class="cm">// disable below 768px</span>
+  <span class="cm">// disable: 'tablet'                // disable below 1024px</span>
+  <span class="cm">// disable: 'mobile,tablet'         // both</span>
+  <span class="cm">// disable: 'desktop'               // disable above 1024px</span>
+  <span class="cm">// disable: true                    // disable entirely</span>
+});</code></pre>
+
+      <h3 id="adv-reduced-motion">Reduced Motion</h3>
+      <p>Flux respects the <code>prefers-reduced-motion: reduce</code> media query automatically. When detected, all durations and delays are set to 1ms for an instant reveal. You can force-enable animation for these users by passing <code>reducedMotion: true</code> to <code>Flux.init()</code>.</p>
+
+      <h3 id="adv-debug">Debug Overlay</h3>
+      <p>Enable the debug overlay to see which elements Flux is tracking and their animation state. Toggle with <code>Ctrl+Shift+D</code>:</p>
+      <pre><code><span class="kw">Flux</span>.init({ debug: <span class="st">true</span> });
+
+<span class="cm">// Or toggle at runtime:</span>
+<span class="kw">Flux</span>.debug();         <span class="cm">// toggle on/off</span>
+<span class="kw">Flux</span>.debug(<span class="st">true</span>);    <span class="cm">// show</span>
+<span class="kw">Flux</span>.debug(<span class="st">false</span>);   <span class="cm">// hide</span></code></pre>
 
       <!-- ─── EASING ─── -->
       <h2 id="easing">Easing Functions</h2>

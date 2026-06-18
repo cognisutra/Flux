@@ -623,72 +623,6 @@
       text-decoration: none;
     }
 
-    /* ── RESPONSIVE ── */
-    .test-btn {
-      position: fixed;
-      bottom: 2rem;
-      right: 2rem;
-      z-index: 1000;
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-      background: linear-gradient(135deg, #7c3aed, #a855f7);
-      color: #fff;
-      border: none;
-      padding: 0.85rem 1.5rem;
-      border-radius: 100px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      cursor: pointer;
-      box-shadow: 0 8px 32px rgba(124,58,237,0.35);
-      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      font-family: inherit;
-      letter-spacing: 0.01em;
-    }
-
-    .test-btn:hover {
-      transform: scale(1.05) translateY(-2px);
-      box-shadow: 0 12px 48px rgba(124,58,237,0.5);
-    }
-
-    .test-btn:active {
-      transform: scale(0.95);
-    }
-
-    .test-btn .count {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba(255,255,255,0.2);
-      border-radius: 100px;
-      padding: 0.15rem 0.55rem;
-      font-size: 0.7rem;
-      font-weight: 700;
-      min-width: 22px;
-    }
-
-    .test-btn .icon {
-      font-size: 1.1rem;
-      line-height: 1;
-    }
-
-    .test-btn-shake {
-      animation: shake 0.5s ease-in-out;
-    }
-
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      10% { transform: translateX(-4px) rotate(-2deg); }
-      20% { transform: translateX(4px) rotate(2deg); }
-      30% { transform: translateX(-4px) rotate(-2deg); }
-      40% { transform: translateX(4px) rotate(2deg); }
-      50% { transform: translateX(-2px) rotate(-1deg); }
-      60% { transform: translateX(2px) rotate(1deg); }
-      70% { transform: translateX(-1px); }
-      80% { transform: translateX(1px); }
-      90% { transform: translateX(-1px); }
-    }
-
     @media (max-width: 768px) {
       section { padding: 5rem 1.25rem; }
       .hero h1 { font-size: clamp(2.5rem, 15vw, 5rem); }
@@ -1012,6 +946,50 @@
         <h3>Anchor Placement</h3>
         <p>Defines the trigger point. Format: <code style="color:#a78bfa;">{el}-{viewport}</code>. Options: top-bottom (default), center-center, bottom-bottom, top-center, etc.</p>
       </div>
+      <div class="config-item" data-aos="fade-up" data-aos-delay="420">
+        <span class="attr">data-aos-preset</span>
+        <h3>Presets</h3>
+        <p>Use built-in presets: <code style="color:#a78bfa;">subtle, smooth, dramatic, bouncy, energetic, reveal, focus, floaty</code>.</p>
+      </div>
+      <div class="config-item" data-aos="fade-up" data-aos-delay="480">
+        <span class="attr">data-aos-group</span>
+        <h3>Groups</h3>
+        <p>Group elements together — all members animate simultaneously when any one triggers.</p>
+      </div>
+      <div class="config-item" data-aos="fade-up" data-aos-delay="540">
+        <span class="attr">data-aos-stagger</span>
+        <h3>Stagger</h3>
+        <p>Set on a parent to stagger child animations by N ms each. E.g. <code style="color:#a78bfa;">data-aos-stagger="80"</code>.</p>
+      </div>
+      <div class="config-item" data-aos="fade-up" data-aos-delay="600">
+        <span class="attr">data-aos-on-start / on-end</span>
+        <h3>Callbacks</h3>
+        <p>Execute JavaScript functions when the animation starts or finishes via <code style="color:#a78bfa;">data-aos-on-start="fn()"</code>.</p>
+      </div>
+      <div class="config-item" data-aos="fade-up" data-aos-delay="660">
+        <span class="attr">data-aos-animate-out</span>
+        <h3>Animate Out</h3>
+        <p>Remove the animation class when the element scrolls back out of view, for re-entrance effects.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <section id="presets">
+    <div class="section-label" data-aos="fade-up">Preset Animations</div>
+    <h2 data-aos="fade-up">One attribute,<br>perfect animation</h2>
+    <p class="subtitle" data-aos="fade-up" data-aos-delay="100">Built-in presets combine animation, duration, and easing into a single <code style="color:#a78bfa;">data-aos-preset</code> attribute.</p>
+
+    <div class="demo-showcase">
+      <div class="demo-box box-purple" data-aos-preset="subtle"><span class="label">subtle</span></div>
+      <div class="demo-box box-pink" data-aos-preset="smooth"><span class="label">smooth</span></div>
+      <div class="demo-box box-orange" data-aos-preset="dramatic"><span class="label">dramatic</span></div>
+      <div class="demo-box box-green" data-aos-preset="bouncy"><span class="label">bouncy</span></div>
+      <div class="demo-box box-cyan" data-aos-preset="energetic"><span class="label">energetic</span></div>
+      <div class="demo-box box-indigo" data-aos-preset="reveal"><span class="label">reveal</span></div>
+      <div class="demo-box box-rose" data-aos-preset="focus"><span class="label">focus</span></div>
+      <div class="demo-box box-purple" data-aos-preset="floaty"><span class="label">floaty</span></div>
     </div>
   </section>
 
@@ -1056,17 +1034,13 @@
         &nbsp;&nbsp;easing: <span class="string">'ease-out-cubic'</span>,<br>
         &nbsp;&nbsp;once: <span class="string">false</span>,<br>
         &nbsp;&nbsp;mirror: <span class="string">false</span>,<br>
-        &nbsp;&nbsp;anchorPlacement: <span class="string">'top-bottom'</span><br>
+        &nbsp;&nbsp;anchorPlacement: <span class="string">'top-bottom'</span>,<br>
+        &nbsp;&nbsp;stagger: <span class="string">50</span>,<br>
+        &nbsp;&nbsp;debug: <span class="string">false</span><br>
         });
       </code>
     </div>
   </section>
-
-  <button class="test-btn" id="animateBtn" title="Replay all animations">
-    <span class="icon">&#9654;</span>
-    Test Animations
-    <span class="count" id="replayCount">0</span>
-  </button>
 
   <footer>
     <p>Built with <span style="color:#ec4899;">&#9829;</span> by <a href="#">Flux</a> &mdash; Zero-dependency animation library</p>
@@ -1108,26 +1082,6 @@
         box.setAttribute('data-anim', firstPill.getAttribute('data-anim'));
       }
     });
-  </script>
-  <script>
-    (function() {
-      var btn = document.getElementById('animateBtn');
-      var countEl = document.getElementById('replayCount');
-      var count = 0;
-
-      btn.addEventListener('click', function() {
-        btn.classList.remove('test-btn-shake');
-        void btn.offsetWidth;
-        btn.classList.add('test-btn-shake');
-
-        if (typeof Flux !== 'undefined' && Flux.replay) {
-          Flux.replay();
-        }
-
-        count++;
-        countEl.textContent = count;
-      });
-    })();
   </script>
   <script src="flux.js"></script>
 </body>
