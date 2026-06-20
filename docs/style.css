@@ -895,7 +895,7 @@ blockquote {
 }
 #pgPreviewLabel{
   font-family: var(--c-main-glow), 'SF Mono', 'Fira Code', monospace;
-  font-size: 64px;
+  font-size: 50px;
   font-weight: bolder;
   background: linear-gradient(135deg, #fff 30%, #c084fc 70%, #a78bfa 100%);
   -webkit-background-clip: text;
