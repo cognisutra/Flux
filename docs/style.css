@@ -894,9 +894,14 @@ blockquote {
   vertical-align: middle;
 }
 #pgPreviewLabel{
-  font-family: 'Courier New', Courier, monospace;
-  font-size: larger;
+  font-family: var(--c-main-glow), 'SF Mono', 'Fira Code', monospace;
+  font-size: 64px;
   font-weight: bolder;
+  background: linear-gradient(135deg, #fff 30%, #c084fc 70%, #a78bfa 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
 }
 .preview-box .preview-label #pgPreviewLabel {
   background: linear-gradient(135deg, #fff 30%, #c084fc 70%, #a78bfa 100%);
