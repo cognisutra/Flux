@@ -1501,27 +1501,30 @@ function updateSnippet() {
   const del = pgDelay.value;
   const rep = pgRepeat.value;
   let css = '<div class="fl-animated fl-' + anim + '"';
-  const vars = [];
-  if (dur !== '1') vars.push('--fl-duration:' + dur + 's');
-  if (del !== '0') vars.push('--fl-delay:' + del + 's');
-  if (rep !== '1') vars.push('--fl-repeat:' + rep);
-  if (easing && easing !== 'ease') vars.push('--fl-timing:' + easing);
-  if (vars.length) css += ' style="' + vars.join(';') + '"';
+  const props = [];
+  if (dur !== '1') props.push('animation-duration:' + dur + 's');
+  if (del !== '0') props.push('animation-delay:' + del + 's');
+  if (rep !== '1') props.push('animation-iteration-count:' + rep);
+  if (easing && easing !== 'ease') props.push('animation-timing-function:' + easing);
+  if (props.length) css += ' style="' + props.join(';') + '"';
   css += '>Animate me!</div>';
   pgSnippet.value = css;
 }
 
 function playAnimation() {
-  pgEl.classList.remove('fl-animated');
+  var preserved = [];
+  pgEl.classList.forEach(function(c) {
+    if (c === 'fl-paused' || c === 'fl-reverse') preserved.push(c);
+  });
+  pgEl.className = preserved.join(' ');
   void pgEl.offsetWidth;
-  const anim = 'fl-' + pgAnim.value;
-  pgEl.style.setProperty('--fl-duration', pgDuration.value + 's');
-  pgEl.style.setProperty('--fl-delay', pgDelay.value + 's');
-  pgEl.style.setProperty('--fl-repeat', pgRepeat.value);
-  pgEl.style.setProperty('--fl-timing', getEasing());
-  pgEl.classList.toggle('fl-paused', pgPaused.checked);
-  pgEl.classList.toggle('fl-reverse', pgReverse.checked);
-  pgEl.classList.add('fl-animated', anim);
+  pgEl.style.setProperty('animation-duration', pgDuration.value + 's');
+  pgEl.style.setProperty('animation-delay', pgDelay.value + 's');
+  pgEl.style.setProperty('animation-iteration-count', pgRepeat.value);
+  pgEl.style.setProperty('animation-timing-function', getEasing());
+  pgEl.classList.add('fl-animated', 'fl-' + pgAnim.value);
+  if (pgPaused.checked) pgEl.classList.add('fl-paused');
+  if (pgReverse.checked) pgEl.classList.add('fl-reverse');
 }
 
 pgAnim.addEventListener('change', () => { updateSnippet(); playAnimation(); });
@@ -1556,6 +1559,7 @@ pgEl.addEventListener('animationend', () => {
 
 populateAnimations();
 updateSnippet();
+playAnimation();
 // ---------- /Playground ----------
 
 // ---------- Easing Visualizer ----------
@@ -1593,6 +1597,7 @@ function drawCurve() {
   easingCode.textContent = cb;
   pgEl.style.setProperty('--fl-timing', cb);
   updateSnippet();
+  playAnimation();
 }
 
 let dragging = null;
