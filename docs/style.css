@@ -870,10 +870,8 @@ blockquote {
   background: linear-gradient(135deg, var(--c-main), #6d28d9, #4c1d95);
   border-radius: 24px;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.75rem;
   color: #fff;
   box-shadow: 0 0 60px var(--c-main-glow-strong), inset 0 1px 0 rgba(255,255,255,0.15);
   flex-shrink: 0;
@@ -881,12 +879,8 @@ blockquote {
   border: 1px solid rgba(255,255,255,0.08);
 }
 
-.preview-box .preview-icon {
-  font-size: clamp(2.5rem, 6vw, 4rem);
-}
-
 .preview-box .preview-label {
-  font-size: clamp(2rem, 6vw, 3rem);
+  font-size: clamp(2.2rem, 6vw, 3.2rem);
   font-weight: 800;
   letter-spacing: -0.04em;
   background: linear-gradient(135deg, #fff 0%, var(--c-main-light) 50%, #fff 100%);
@@ -894,6 +888,13 @@ blockquote {
   -webkit-text-fill-color: transparent;
   background-clip: text;
   text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.preview-box .preview-icon {
+  font-size: 1em;
 }
 
 .controls-card {
