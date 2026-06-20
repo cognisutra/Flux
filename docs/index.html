@@ -2584,7 +2584,7 @@ animateCSS('.my-element', 'bounce').then((message) =&gt; {
         }
         var preserved = [];
         pgEl.classList.forEach(function (c) {
-          if (c === 'fl-paused' || c === 'fl-reverse') preserved.push(c);
+          if (c !== 'fl-animated' && !c.startsWith('fl-')) preserved.push(c);
         });
         pgEl.className = preserved.join(' ');
         void pgEl.offsetWidth;
@@ -2624,7 +2624,10 @@ animateCSS('.my-element', 'bounce').then((message) =&gt; {
 
       pgPaused.addEventListener('change', playAnimation);
       pgReverse.addEventListener('change', playAnimation);
-      pgPlayBtn.addEventListener('click', playAnimation);
+      pgPlayBtn.addEventListener('click', () => {
+        pgPaused.checked = false;
+        playAnimation();
+      });
 
       pgSnippet.addEventListener('click', () => {
         pgSnippet.select();
