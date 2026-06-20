@@ -893,7 +893,11 @@ blockquote {
   display: inline-block;
   vertical-align: middle;
 }
-
+#pgPreviewLabel{
+  font-family: 'Courier New', Courier, monospace;
+  font-size: larger;
+  font-weight: bolder;
+}
 .preview-box .preview-label #pgPreviewLabel {
   background: linear-gradient(135deg, #fff 30%, #c084fc 70%, #a78bfa 100%);
   -webkit-background-clip: text;
