@@ -835,6 +835,33 @@ blockquote {
   margin: 0;
   font-size: 1.1rem;
   color: var(--c-text);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.preview-stage {
+  background: radial-gradient(ellipse at center, rgba(124,58,237,0.08) 0%, transparent 70%);
+  border: 1px solid var(--c-border-light);
+  border-radius: 20px;
+  padding: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 320px;
+}
+
+#pgPlayStatus {
+  font-size: 0.6rem;
+  color: #22c55e;
+  animation: pgPulse 1.2s ease-in-out infinite;
+}
+
+@keyframes pgPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
 }
 
 .preview-box {
