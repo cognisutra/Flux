@@ -912,111 +912,97 @@
 
       <section class="playground" id="playground">
         <div class="playground-header">
-          <h2><span class="playground-status" id="pgPlayStatus"></span> Playground</h2>
-          <p>Choose an animation, tweak the timing, preview it live, and grab the code.</p>
+          <h2>Playground</h2>
+          <p>Choose an animation, tweak the parameters, preview it live, and copy the code.</p>
         </div>
 
-        <div class="playground-body">
-          <div class="playground-preview">
+        <div class="playground-layout">
+          <div class="preview-card">
+            <h3><span id="pgPlayStatus">&#9679;</span> Preview</h3>
             <div class="preview-stage">
-              <div class="preview-box" id="playgroundPreview">
-                <span class="preview-icon">&#x2728;</span>
-                <span class="preview-label" id="pgPreviewLabel">bounce</span>
+              <div class="preview-box" id="playgroundPreview"><span class="preview-icon">&#x2728;</span><span class="preview-label" id="pgPreviewLabel">bounce</span></div>
+            </div>
+            <div class="control-row" style="width:100%">
+              <div class="control-group">
+                <label>Duration</label>
+                <input type="range" id="pgDuration" min="0.1" max="5" step="0.1" value="1">
+                <span class="control-value" id="pgDurationVal">1s</span>
+              </div>
+              <div class="control-group">
+                <label>Delay</label>
+                <input type="range" id="pgDelay" min="0" max="3" step="0.1" value="0">
+                <span class="control-value" id="pgDelayVal">0s</span>
+              </div>
+              <div class="control-group">
+                <label>Repeat</label>
+                <input type="range" id="pgRepeat" min="1" max="10" step="1" value="1">
+                <span class="control-value" id="pgRepeatVal">1</span>
               </div>
             </div>
-
-            <div class="playground-actions">
-              <button class="pg-btn pg-btn-play" id="pgPlayBtn" title="Play animation">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4 2l10 6-10 6V2z"/></svg>
-                <span>Play</span>
-              </button>
-              <button class="pg-btn" id="pgPauseBtn" title="Pause / Resume">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M3 2h4v12H3V2zm6 0h4v12H9V2z"/></svg>
-                <span>Pause</span>
-              </button>
-              <button class="pg-btn" id="pgReverseBtn" title="Reverse direction">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M2 8l4-4v3h6v2H6v3L2 8z"/></svg>
-                <span>Reverse</span>
-              </button>
-            </div>
-
-            <div class="playground-snippet">
-              <code id="pgSnippet">&lt;div class=&quot;fl-animated fl-bounce&quot;&gt;Animate me!&lt;/div&gt;</code>
-              <button class="pg-snip-copy" id="pgSnippetCopy" title="Copy code">
-                <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M5 1h8a1 1 0 011 1v8h-1V2H5V1zM3 3h6a1 1 0 011 1v8a1 1 0 01-1 1H3a1 1 0 01-1-1V4a1 1 0 011-1zm0 1v8h6V4H3z"/></svg>
-              </button>
-            </div>
+            <input class="copy-snippet" id="pgSnippet" readonly value="Click to copy snippet">
           </div>
 
-          <div class="playground-controls">
-            <div class="ctrl-section">
-              <div class="ctrl-section-title">Animation</div>
-              <div class="ctrl-group">
-                <label>Type</label>
-                <select id="pgAnimation"></select>
-              </div>
-              <div class="ctrl-group">
-                <label>Easing</label>
-                <select id="pgEasing">
-                  <option value="ease">ease</option>
-                  <option value="ease-in">ease-in</option>
-                  <option value="ease-out">ease-out</option>
-                  <option value="ease-in-out">ease-in-out</option>
-                  <option value="linear">linear</option>
-                  <option value="cubic-bezier(0.36,0.07,0.19,0.97)" selected>bounce</option>
-                  <option value="cubic-bezier(0.68,-0.55,0.27,1.55)">spring</option>
-                  <option value="cubic-bezier(0.76,0,0.24,1)">smooth</option>
-                </select>
-              </div>
+          <div class="controls-card">
+            <div class="control-group">
+              <label>Animation</label>
+              <select id="pgAnimation"></select>
             </div>
-
-            <div class="ctrl-section">
-              <div class="ctrl-section-title">Timing</div>
-              <div class="ctrl-group ctrl-group--slider">
-                <label>Duration <span class="ctrl-val" id="pgDurationVal">1s</span></label>
-                <input type="range" id="pgDuration" min="0.1" max="5" step="0.1" value="1">
-              </div>
-              <div class="ctrl-group ctrl-group--slider">
-                <label>Delay <span class="ctrl-val" id="pgDelayVal">0s</span></label>
-                <input type="range" id="pgDelay" min="0" max="3" step="0.1" value="0">
-              </div>
-              <div class="ctrl-group ctrl-group--slider">
-                <label>Repeat <span class="ctrl-val" id="pgRepeatVal">1</span></label>
-                <input type="range" id="pgRepeat" min="1" max="10" step="1" value="1">
-              </div>
+            <div class="control-group">
+              <label>Easing</label>
+              <select id="pgEasing">
+                <option value="ease">ease</option>
+                <option value="ease-in">ease-in</option>
+                <option value="ease-out">ease-out</option>
+                <option value="ease-in-out">ease-in-out</option>
+                <option value="linear">linear</option>
+                <option value="cubic-bezier(0.36,0.07,0.19,0.97)" selected>bounce</option>
+                <option value="cubic-bezier(0.68,-0.55,0.27,1.55)">spring</option>
+                <option value="cubic-bezier(0.76,0,0.24,1)">smooth</option>
+              </select>
             </div>
+            <button class="copy-snippet" id="pgPlayBtn" style="border-color:var(--c-main);background:transparent;color:var(--c-main)">&#9654; Play</button>
+            <div class="control-group">
+              <label style="display:flex;align-items:center;gap:0.5rem">
+                <input type="checkbox" id="pgPaused"> Paused (<code>.fl-paused</code>)
+              </label>
+            </div>
+            <div class="control-group">
+              <label style="display:flex;align-items:center;gap:0.5rem">
+                <input type="checkbox" id="pgReverse"> Reverse (<code>.fl-reverse</code>)
+              </label>
+            </div>
+          </div>
+        </div>
 
-            <div class="ctrl-section">
-              <div class="ctrl-section-title">Easing Visualizer</div>
-              <div class="easing-body">
-                <div class="easing-canvas-wrap">
-                  <svg id="easingSvg" width="220" height="220" viewBox="0 0 220 220">
-                    <line class="grid" x1="10" y1="210" x2="210" y2="210"/>
-                    <line class="grid" x1="10" y1="10" x2="10" y2="210"/>
-                    <line class="grid" x1="10" y1="110" x2="210" y2="110"/>
-                    <line class="grid" x1="110" y1="10" x2="110" y2="210"/>
-                    <line class="handle" x1="10" y1="210" x2="70" y2="50"/>
-                    <line class="handle" x1="210" y1="10" x2="150" y2="170"/>
-                    <path class="curve" id="easingCurve" d=""/>
-                    <circle class="start-end" cx="10" cy="210"/>
-                    <circle class="handle" id="easingP1" cx="70" cy="50"/>
-                    <circle class="handle" id="easingP2" cx="150" cy="170"/>
-                    <circle class="start-end" cx="210" cy="10"/>
-                  </svg>
-                </div>
-                <div class="easing-info">
-                  <code id="easingCode">cubic-bezier(0.3, 0.8, 0.7, 0.2)</code>
-                  <div class="easing-presets" id="easingPresets">
-                    <button class="easing-preset" data-cb="0.25,0.1,0.25,1">ease</button>
-                    <button class="easing-preset" data-cb="0.42,0,1,1">ease-in</button>
-                    <button class="easing-preset" data-cb="0,0,0.58,1">ease-out</button>
-                    <button class="easing-preset" data-cb="0.42,0,0.58,1">ease-in-out</button>
-                    <button class="easing-preset" data-cb="0,0,1,1">linear</button>
-                    <button class="easing-preset" data-cb="0.36,0.07,0.19,0.97">bounce</button>
-                    <button class="easing-preset" data-cb="0.68,-0.55,0.27,1.55">spring</button>
-                    <button class="easing-preset" data-cb="0.76,0,0.24,1">smooth</button>
-                  </div>
-                </div>
+        <div class="easing-card" id="easingVisualizer">
+          <h3>Easing Visualizer</h3>
+          <div class="easing-visualizer">
+            <div class="easing-canvas-wrap">
+              <svg id="easingSvg" width="220" height="220" viewBox="0 0 220 220">
+                <line class="grid" x1="10" y1="210" x2="210" y2="210"/>
+                <line class="grid" x1="10" y1="10" x2="10" y2="210"/>
+                <line class="grid" x1="10" y1="110" x2="210" y2="110"/>
+                <line class="grid" x1="110" y1="10" x2="110" y2="210"/>
+                <line class="handle" x1="10" y1="210" x2="70" y2="50"/>
+                <line class="handle" x1="210" y1="10" x2="150" y2="170"/>
+                <path class="curve" id="easingCurve" d=""/>
+                <circle class="start-end" cx="10" cy="210"/>
+                <circle class="handle" id="easingP1" cx="70" cy="50"/>
+                <circle class="handle" id="easingP2" cx="150" cy="170"/>
+                <circle class="start-end" cx="210" cy="10"/>
+              </svg>
+            </div>
+            <div class="easing-info">
+              <code id="easingCode">cubic-bezier(0.3, 0.8, 0.7, 0.2)</code>
+              <div class="easing-presets" id="easingPresets">
+                <button class="easing-preset" data-cb="0.25,0.1,0.25,1">ease</button>
+                <button class="easing-preset" data-cb="0.42,0,1,1">ease-in</button>
+                <button class="easing-preset" data-cb="0,0,0.58,1">ease-out</button>
+                <button class="easing-preset" data-cb="0.42,0,0.58,1">ease-in-out</button>
+                <button class="easing-preset" data-cb="0,0,1,1">linear</button>
+                <button class="easing-preset" data-cb="0.36,0.07,0.19,0.97">bounce</button>
+                <button class="easing-preset" data-cb="0.68,-0.55,0.27,1.55">spring</button>
+                <button class="easing-preset" data-cb="0.76,0,0.24,1">smooth</button>
               </div>
             </div>
           </div>
@@ -1485,13 +1471,9 @@ const pgDelayVal = document.getElementById('pgDelayVal');
 const pgRepeat = document.getElementById('pgRepeat');
 const pgRepeatVal = document.getElementById('pgRepeatVal');
 const pgSnippet = document.getElementById('pgSnippet');
-const pgSnippetCopy = document.getElementById('pgSnippetCopy');
 const pgPlayBtn = document.getElementById('pgPlayBtn');
-const pgPauseBtn = document.getElementById('pgPauseBtn');
-const pgReverseBtn = document.getElementById('pgReverseBtn');
-
-var pgPaused = false;
-var pgReversed = false;
+const pgPaused = document.getElementById('pgPaused');
+const pgReverse = document.getElementById('pgReverse');
 
 function populateAnimations() {
   const items = document.querySelectorAll('.animation-item');
@@ -1520,40 +1502,35 @@ function updateSnippet() {
   const dur = pgDuration.value;
   const del = pgDelay.value;
   const rep = pgRepeat.value;
-  let css = '&lt;div class=&quot;fl-animated fl-' + anim + '&quot;';
+  let css = '<div class="fl-animated fl-' + anim + '"';
   const props = [];
   if (dur !== '1') props.push('animation-duration:' + dur + 's');
   if (del !== '0') props.push('animation-delay:' + del + 's');
   if (rep !== '1') props.push('animation-iteration-count:' + rep);
   if (easing && easing !== 'ease') props.push('animation-timing-function:' + easing);
-  if (props.length) css += ' style=&quot;' + props.join(';') + '&quot;';
-  css += '&gt;Animate me!&lt;/div&gt;';
-  pgSnippet.textContent = css;
+  if (props.length) css += ' style="' + props.join(';') + '"';
+  css += '>Animate me!</div>';
+  pgSnippet.value = css;
 }
 
 var pgRestartTimer = null;
 
 function playAnimation() {
   if (pgRestartTimer) { clearTimeout(pgRestartTimer); pgRestartTimer = null; }
-  pgEl.className = '';
+  var preserved = [];
+  pgEl.classList.forEach(function(c) {
+    if (c === 'fl-paused' || c === 'fl-reverse') preserved.push(c);
+  });
+  pgEl.className = preserved.join(' ');
   void pgEl.offsetWidth;
   pgEl.style.setProperty('animation-duration', pgDuration.value + 's');
   pgEl.style.setProperty('animation-delay', pgDelay.value + 's');
   pgEl.style.setProperty('animation-iteration-count', pgRepeat.value);
   pgEl.style.setProperty('animation-timing-function', getEasing());
   pgEl.classList.add('fl-animated', 'fl-' + pgAnim.value);
-  if (pgPaused) pgEl.classList.add('fl-paused');
-  if (pgReversed) pgEl.classList.add('fl-reverse');
+  if (pgPaused.checked) pgEl.classList.add('fl-paused');
+  if (pgReverse.checked) pgEl.classList.add('fl-reverse');
   document.getElementById('pgPreviewLabel').textContent = pgAnim.value;
-}
-
-function syncPauseBtn() {
-  pgPauseBtn.classList.toggle('active', pgPaused);
-  pgPauseBtn.querySelector('span').textContent = pgPaused ? 'Resume' : 'Pause';
-}
-
-function syncReverseBtn() {
-  pgReverseBtn.classList.toggle('active', pgReversed);
 }
 
 pgAnim.addEventListener('change', () => { updateSnippet(); playAnimation(); });
@@ -1562,42 +1539,28 @@ pgEasing.addEventListener('change', () => { pgEl.style.removeProperty('--fl-timi
 [pgDuration, pgDelay, pgRepeat].forEach(slider => {
   slider.addEventListener('input', () => {
     const val = slider.value;
-    var label = null;
-    if (slider === pgDuration) label = pgDurationVal;
-    else if (slider === pgDelay) label = pgDelayVal;
-    else if (slider === pgRepeat) label = pgRepeatVal;
-    if (label) {
-      label.textContent = (slider === pgRepeat) ? val : parseFloat(val).toFixed(1) + 's';
+    const label = slider.nextElementSibling;
+    if (slider === pgRepeat) {
+      label.textContent = val;
+    } else {
+      label.textContent = parseFloat(val).toFixed(1) + 's';
     }
     updateSnippet();
     playAnimation();
   });
 });
 
+pgPaused.addEventListener('change', playAnimation);
+pgReverse.addEventListener('change', playAnimation);
 pgPlayBtn.addEventListener('click', playAnimation);
 
-pgPauseBtn.addEventListener('click', () => {
-  pgPaused = !pgPaused;
-  syncPauseBtn();
-  playAnimation();
-  if (!pgPaused) document.getElementById('pgPlayStatus').style.animation = 'pgPulse 1.2s ease-in-out infinite';
-  else document.getElementById('pgPlayStatus').style.animation = 'none';
-});
-
-pgReverseBtn.addEventListener('click', () => {
-  pgReversed = !pgReversed;
-  syncReverseBtn();
-  playAnimation();
-});
-
-pgSnippetCopy.addEventListener('click', () => {
-  navigator.clipboard.writeText(pgSnippet.textContent.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"')).catch(function() {});
-  pgSnippetCopy.classList.add('copied');
-  setTimeout(function() { pgSnippetCopy.classList.remove('copied'); }, 750);
+pgSnippet.addEventListener('click', () => {
+  pgSnippet.select();
+  navigator.clipboard.writeText(pgSnippet.value).catch(() => {});
 });
 
 pgEl.addEventListener('animationend', () => {
-  if (pgPaused) return;
+  if (pgPaused.checked) return;
   pgRestartTimer = setTimeout(playAnimation, 600);
 });
 
