@@ -919,7 +919,7 @@
         <div class="playground-layout">
           <div class="preview-card">
             <h3>Preview</h3>
-            <div class="preview-box" id="playgroundPreview">&#x2728;</div>
+            <div class="preview-box" id="playgroundPreview"><span>&#x2728;</span><span class="preview-label" id="pgPreviewLabel">bounce</span></div>
             <div class="control-row" style="width:100%">
               <div class="control-group">
                 <label>Duration</label>
@@ -1511,7 +1511,10 @@ function updateSnippet() {
   pgSnippet.value = css;
 }
 
+var pgRestartTimer = null;
+
 function playAnimation() {
+  if (pgRestartTimer) { clearTimeout(pgRestartTimer); pgRestartTimer = null; }
   var preserved = [];
   pgEl.classList.forEach(function(c) {
     if (c === 'fl-paused' || c === 'fl-reverse') preserved.push(c);
@@ -1525,6 +1528,7 @@ function playAnimation() {
   pgEl.classList.add('fl-animated', 'fl-' + pgAnim.value);
   if (pgPaused.checked) pgEl.classList.add('fl-paused');
   if (pgReverse.checked) pgEl.classList.add('fl-reverse');
+  document.getElementById('pgPreviewLabel').textContent = pgAnim.value;
 }
 
 pgAnim.addEventListener('change', () => { updateSnippet(); playAnimation(); });
@@ -1554,7 +1558,8 @@ pgSnippet.addEventListener('click', () => {
 });
 
 pgEl.addEventListener('animationend', () => {
-  pgEl.classList.remove('fl-animated');
+  if (pgPaused.checked) return;
+  pgRestartTimer = setTimeout(playAnimation, 600);
 });
 
 populateAnimations();
