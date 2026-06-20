@@ -4,14 +4,14 @@ const darkModeControl = () => {
   darkCheck.addEventListener('click', () => {
     if (darkCheck.checked) {
       document.body.classList.add('dark');
-      localStorage.setItem('animate-css', 'dark');
+      localStorage.setItem('flux', 'dark');
     } else {
       document.body.classList.remove('dark');
-      localStorage.removeItem('animate-css');
+      localStorage.removeItem('flux');
     }
   })
 
-  if (localStorage.getItem('animate-css')) {
+  if (localStorage.getItem('flux')) {
     document.body.className = 'dark';
     darkCheck.checked = true;
   }

@@ -29,15 +29,15 @@ const playground = (
 
     if(el.classList.contains('animation-item--title')) {
       clearAll(items);
-      const animation = `animate__${el.parentElement.getAttribute('data-animation')}`;
+      const animation = `fl-${el.parentElement.getAttribute('data-animation')}`;
 
-      targetEl.classList.add('animate__animated', animation);
+      targetEl.classList.add('fl-animated', animation);
       document.documentElement.classList.add('isPlaying');
       document.documentElement.classList.remove('animationList-active');
     }
 
     if (el.classList.contains('copy-icon')) {
-      const animation = `animate__${el.parentElement.getAttribute('data-animation')}`;
+      const animation = `fl-${el.parentElement.getAttribute('data-animation')}`;
       navigator.clipboard.writeText(animation);
     }
   });

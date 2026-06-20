@@ -7,7 +7,7 @@ Smooth, performant CSS animations by [Cognisutra](https://github.com/cognisutra)
 Add via jsDelivr CDN:
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/cognisutra/Flux/animate.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/cognisutra/Flux/docs/animate.min.css" />
 ```
 
 ## Usage

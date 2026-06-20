@@ -8,10 +8,10 @@ const slowDownAnimations = (target) => {
 
   targetEl.addEventListener('click', () => {
     const currentDuration = getComputedStyle(document.documentElement)
-      .getPropertyValue('--animate-duration')
+      .getPropertyValue('--fl-duration')
     const newDuration = currentDuration === '1s' ? '2s' : '1s'
 
-    document.documentElement.style.setProperty('--animate-duration', newDuration);
+    document.documentElement.style.setProperty('--fl-duration', newDuration);
   })
 }
 

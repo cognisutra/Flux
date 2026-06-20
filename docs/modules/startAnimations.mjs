@@ -14,10 +14,10 @@ const startAnimation = () => {
   const buttonAnimation = 'zoomInUp'
   const sidebarAnimation = 'fadeInRight'
 
-  title.classList.add('animate__animated', `animate__${titleAnimation}`)
-  subTitle.classList.add('animate__animated', `animate__${subTitleAnimation}`)
-  button.classList.add('animate__animated', `animate__${buttonAnimation}`)
-  sidebar.classList.add('animate__animated', `animate__${sidebarAnimation}`)
+  title.classList.add('fl-animated', `fl-${titleAnimation}`)
+  subTitle.classList.add('fl-animated', `fl-${subTitleAnimation}`)
+  button.classList.add('fl-animated', `fl-${buttonAnimation}`)
+  sidebar.classList.add('fl-animated', `fl-${sidebarAnimation}`)
 }
 
 export default startAnimation
