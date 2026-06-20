@@ -822,13 +822,15 @@ blockquote {
 
 .preview-card {
   background: var(--c-surface);
-  border: 1px solid var(--c-border);
+  border: 1px solid rgba(124, 58, 237, 0.15);
   border-radius: 16px;
   padding: 2rem;
+  margin: 0.5rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1.5rem;
+  animation: borderGlow 3s ease-in-out infinite;
 }
 
 .preview-card h3 {
@@ -913,12 +915,14 @@ blockquote {
 
 .controls-card {
   background: var(--c-surface);
-  border: 1px solid var(--c-border);
+  border: 1px solid rgba(124, 58, 237, 0.15);
   border-radius: 16px;
   padding: 2rem;
+  margin: 0.5rem;
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
+  animation: borderGlow 3s ease-in-out infinite;
 }
 
 .control-group {
@@ -1131,4 +1135,15 @@ blockquote {
 
 .animation-list {
   text-align: left;
+}
+
+@keyframes borderGlow {
+  0%, 100% {
+    border-color: rgba(124, 58, 237, 0.15);
+    box-shadow: 0 0 8px rgba(124, 58, 237, 0.05);
+  }
+  50% {
+    border-color: rgba(124, 58, 237, 0.5);
+    box-shadow: 0 0 24px rgba(124, 58, 237, 0.25);
+  }
 }
