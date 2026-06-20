@@ -15,6 +15,8 @@
     <link
       href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.20.0/themes/prism-tomorrow.min.css"
       rel="stylesheet"
+      integrity="sha384-EEP4SIhERVuvVqU0Y31IKqQhM9AornnryBxQBldu3N9mK5H1YBol78SoFa70zdNO"
+      crossorigin="anonymous"
     />
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/cognisutra/Flux@main/docs/animate.min.css" />
@@ -908,6 +910,103 @@
         </div>
       </header>
 
+      <section class="playground" id="playground">
+        <div class="playground-header">
+          <h2>Playground</h2>
+          <p>Choose an animation, tweak the parameters, preview it live, and copy the code.</p>
+        </div>
+
+        <div class="playground-layout">
+          <div class="preview-card">
+            <h3>Preview</h3>
+            <div class="preview-box" id="playgroundPreview">&#x2728;</div>
+            <div class="control-row" style="width:100%">
+              <div class="control-group">
+                <label>Duration</label>
+                <input type="range" id="pgDuration" min="0.1" max="5" step="0.1" value="1">
+                <span class="control-value" id="pgDurationVal">1s</span>
+              </div>
+              <div class="control-group">
+                <label>Delay</label>
+                <input type="range" id="pgDelay" min="0" max="3" step="0.1" value="0">
+                <span class="control-value" id="pgDelayVal">0s</span>
+              </div>
+              <div class="control-group">
+                <label>Repeat</label>
+                <input type="range" id="pgRepeat" min="1" max="10" step="1" value="1">
+                <span class="control-value" id="pgRepeatVal">1</span>
+              </div>
+            </div>
+            <input class="copy-snippet" id="pgSnippet" readonly value="Click to copy snippet">
+          </div>
+
+          <div class="controls-card">
+            <div class="control-group">
+              <label>Animation</label>
+              <select id="pgAnimation"></select>
+            </div>
+            <div class="control-group">
+              <label>Easing</label>
+              <select id="pgEasing">
+                <option value="ease">ease</option>
+                <option value="ease-in">ease-in</option>
+                <option value="ease-out">ease-out</option>
+                <option value="ease-in-out">ease-in-out</option>
+                <option value="linear">linear</option>
+                <option value="cubic-bezier(0.36,0.07,0.19,0.97)" selected>bounce</option>
+                <option value="cubic-bezier(0.68,-0.55,0.27,1.55)">spring</option>
+                <option value="cubic-bezier(0.76,0,0.24,1)">smooth</option>
+              </select>
+            </div>
+            <button class="copy-snippet" id="pgPlayBtn" style="border-color:var(--c-main);background:transparent;color:var(--c-main)">&#9654; Play</button>
+            <div class="control-group">
+              <label style="display:flex;align-items:center;gap:0.5rem">
+                <input type="checkbox" id="pgPaused"> Paused (<code>.fl-paused</code>)
+              </label>
+            </div>
+            <div class="control-group">
+              <label style="display:flex;align-items:center;gap:0.5rem">
+                <input type="checkbox" id="pgReverse"> Reverse (<code>.fl-reverse</code>)
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="easing-card" id="easingVisualizer">
+          <h3>Easing Visualizer</h3>
+          <div class="easing-visualizer">
+            <div class="easing-canvas-wrap">
+              <svg id="easingSvg" width="220" height="220" viewBox="0 0 220 220">
+                <line class="grid" x1="10" y1="210" x2="210" y2="210"/>
+                <line class="grid" x1="10" y1="10" x2="10" y2="210"/>
+                <line class="grid" x1="10" y1="110" x2="210" y2="110"/>
+                <line class="grid" x1="110" y1="10" x2="110" y2="210"/>
+                <line class="handle" x1="10" y1="210" x2="70" y2="50"/>
+                <line class="handle" x1="210" y1="10" x2="150" y2="170"/>
+                <path class="curve" id="easingCurve" d=""/>
+                <circle class="start-end" cx="10" cy="210"/>
+                <circle class="handle" id="easingP1" cx="70" cy="50"/>
+                <circle class="handle" id="easingP2" cx="150" cy="170"/>
+                <circle class="start-end" cx="210" cy="10"/>
+              </svg>
+            </div>
+            <div class="easing-info">
+              <code id="easingCode">cubic-bezier(0.3, 0.8, 0.7, 0.2)</code>
+              <div class="easing-presets" id="easingPresets">
+                <button class="easing-preset" data-cb="0.25,0.1,0.25,1">ease</button>
+                <button class="easing-preset" data-cb="0.42,0,1,1">ease-in</button>
+                <button class="easing-preset" data-cb="0,0,0.58,1">ease-out</button>
+                <button class="easing-preset" data-cb="0.42,0,0.58,1">ease-in-out</button>
+                <button class="easing-preset" data-cb="0,0,1,1">linear</button>
+                <button class="easing-preset" data-cb="0.36,0.07,0.19,0.97">bounce</button>
+                <button class="easing-preset" data-cb="0.68,-0.55,0.27,1.55">spring</button>
+                <button class="easing-preset" data-cb="0.76,0,0.24,1">smooth</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <article class="docs" id="documentation">
         <span class="hamburger">
           <svg
@@ -1240,6 +1339,28 @@ animateCSS('.my-element', 'bounce').then((message) =&gt; {
       </p>
     </aside>
     <script>
+// ---------- Reduced motion & performance ----------
+const mqReduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+if (mqReduced.matches) {
+  document.documentElement.classList.add('fl-reduced-motion');
+  document.querySelectorAll('.fl-animated').forEach(el => el.classList.remove('fl-animated'));
+}
+mqReduced.addEventListener('change', e => {
+  if (e.matches) {
+    document.documentElement.classList.add('fl-reduced-motion');
+    document.querySelectorAll('.fl-animated').forEach(el => el.classList.remove('fl-animated'));
+  } else {
+    document.documentElement.classList.remove('fl-reduced-motion');
+  }
+});
+
+const cores = navigator.hardwareConcurrency;
+const memory = navigator.deviceMemory;
+if ((cores && cores < 4) || (memory && memory < 2)) {
+  document.documentElement.classList.add('fl-low-end');
+}
+// ---------- /Reduced motion & performance ----------
+
 const toggleOnClick = (el, target, className) => {
   const element = document.querySelector(el)
   const targetEl = document.querySelector(target)
@@ -1259,7 +1380,7 @@ const setEndListener = (target, defaultClass) => {
   });
 };
 
-const playground = (
+const sidebarPlay = (
   container = '.animation-list',
   item = '.animation-item',
   target = '.callout-title',
@@ -1306,22 +1427,25 @@ const startAnimation = () => {
   sidebar.classList.add('fl-animated', 'fl-' + sidebarAnimation)
 }
 
-const indexItemTemplate = (item = '', id) => (
-  '<li class="docs-indexItem"><a href="#' + id + '" title="' + item + '">' + item + '</a></li>'
-)
-
 const indexList = (sections = [], container = '.sidebar', heading = 'h2') => {
   const containerEl = document.querySelector(container)
   const list = document.createElement('ul')
+  list.classList.add('docs-index')
 
-  const children = sections.map(section => {
+  sections.forEach(section => {
     const title = section.querySelector(heading)
     const id = section.getAttribute('id')
-    return title && indexItemTemplate(title.innerText, id)
-  })
+    if (!title) return
 
-  list.classList.add('docs-index')
-  list.innerHTML = children.join('\n')
+    const li = document.createElement('li')
+    li.classList.add('docs-indexItem')
+    const a = document.createElement('a')
+    a.href = '#' + id
+    a.title = title.innerText
+    a.textContent = title.innerText
+    li.appendChild(a)
+    list.appendChild(li)
+  })
 
   containerEl.insertAdjacentElement('beforeend', list)
   return list
@@ -1334,8 +1458,203 @@ const buildDocsIndex = (docs = '#documentation', docSection = '[class*="docSecti
   return list
 }
 
+// ---------- Live Playground ----------
+const pgEl = document.getElementById('playgroundPreview');
+const pgAnim = document.getElementById('pgAnimation');
+const pgEasing = document.getElementById('pgEasing');
+const pgDuration = document.getElementById('pgDuration');
+const pgDurationVal = document.getElementById('pgDurationVal');
+const pgDelay = document.getElementById('pgDelay');
+const pgDelayVal = document.getElementById('pgDelayVal');
+const pgRepeat = document.getElementById('pgRepeat');
+const pgRepeatVal = document.getElementById('pgRepeatVal');
+const pgSnippet = document.getElementById('pgSnippet');
+const pgPlayBtn = document.getElementById('pgPlayBtn');
+const pgPaused = document.getElementById('pgPaused');
+const pgReverse = document.getElementById('pgReverse');
+
+function populateAnimations() {
+  const items = document.querySelectorAll('.animation-item');
+  const seen = new Set();
+  items.forEach(item => {
+    const name = item.getAttribute('data-animation');
+    if (name && !seen.has(name)) {
+      seen.add(name);
+      const opt = document.createElement('option');
+      opt.value = name;
+      opt.textContent = name;
+      pgAnim.appendChild(opt);
+    }
+  });
+  pgAnim.value = 'bounce';
+}
+
+function getEasing() {
+  const custom = pgEl.style.getPropertyValue('--fl-timing');
+  return custom || pgEasing.value;
+}
+
+function updateSnippet() {
+  const anim = pgAnim.value;
+  const easing = getEasing();
+  const dur = pgDuration.value;
+  const del = pgDelay.value;
+  const rep = pgRepeat.value;
+  let css = '<div class="fl-animated fl-' + anim + '"';
+  const vars = [];
+  if (dur !== '1') vars.push('--fl-duration:' + dur + 's');
+  if (del !== '0') vars.push('--fl-delay:' + del + 's');
+  if (rep !== '1') vars.push('--fl-repeat:' + rep);
+  if (easing && easing !== 'ease') vars.push('--fl-timing:' + easing);
+  if (vars.length) css += ' style="' + vars.join(';') + '"';
+  css += '>Animate me!</div>';
+  pgSnippet.value = css;
+}
+
+function playAnimation() {
+  pgEl.classList.remove('fl-animated');
+  void pgEl.offsetWidth;
+  const anim = 'fl-' + pgAnim.value;
+  pgEl.style.setProperty('--fl-duration', pgDuration.value + 's');
+  pgEl.style.setProperty('--fl-delay', pgDelay.value + 's');
+  pgEl.style.setProperty('--fl-repeat', pgRepeat.value);
+  pgEl.style.setProperty('--fl-timing', getEasing());
+  pgEl.classList.toggle('fl-paused', pgPaused.checked);
+  pgEl.classList.toggle('fl-reverse', pgReverse.checked);
+  pgEl.classList.add('fl-animated', anim);
+}
+
+pgAnim.addEventListener('change', () => { updateSnippet(); playAnimation(); });
+pgEasing.addEventListener('change', () => { pgEl.style.removeProperty('--fl-timing'); updateSnippet(); playAnimation(); });
+
+[pgDuration, pgDelay, pgRepeat].forEach(slider => {
+  slider.addEventListener('input', () => {
+    const val = slider.value;
+    const label = slider.nextElementSibling;
+    if (slider === pgRepeat) {
+      label.textContent = val;
+    } else {
+      label.textContent = parseFloat(val).toFixed(1) + 's';
+    }
+    updateSnippet();
+    playAnimation();
+  });
+});
+
+pgPaused.addEventListener('change', playAnimation);
+pgReverse.addEventListener('change', playAnimation);
+pgPlayBtn.addEventListener('click', playAnimation);
+
+pgSnippet.addEventListener('click', () => {
+  pgSnippet.select();
+  navigator.clipboard.writeText(pgSnippet.value).catch(() => {});
+});
+
+pgEl.addEventListener('animationend', () => {
+  pgEl.classList.remove('fl-animated');
+});
+
+populateAnimations();
+updateSnippet();
+// ---------- /Playground ----------
+
+// ---------- Easing Visualizer ----------
+const easingSvg = document.getElementById('easingSvg');
+const easingCurve = document.getElementById('easingCurve');
+const easingCode = document.getElementById('easingCode');
+const easingP1 = document.getElementById('easingP1');
+const easingP2 = document.getElementById('easingP2');
+const easingPresets = document.getElementById('easingPresets');
+
+let p1 = { x: 0.3, y: 0.8 };
+let p2 = { x: 0.7, y: 0.2 };
+
+function scale(pt) {
+  return { x: 10 + pt.x * 200, y: 210 - pt.y * 200 };
+}
+
+function unscale(sx, sy) {
+  return { x: (sx - 10) / 200, y: (210 - sy) / 200 };
+}
+
+function drawCurve() {
+  const s = scale(p1);
+  const e = scale(p2);
+  easingP1.setAttribute('cx', s.x);
+  easingP1.setAttribute('cy', s.y);
+  easingP2.setAttribute('cx', e.x);
+  easingP2.setAttribute('cy', e.y);
+  const p = scale({ x: 0, y: 0 });
+  const q = scale({ x: 1, y: 1 });
+  const d = 'M' + p.x + ',' + p.y + ' C' + s.x + ',' + s.y + ' ' + e.x + ',' + e.y + ' ' + q.x + ',' + q.y;
+  easingCurve.setAttribute('d', d);
+  const x1 = p1.x.toFixed(3), y1 = p1.y.toFixed(3), x2 = p2.x.toFixed(3), y2 = p2.y.toFixed(3);
+  const cb = 'cubic-bezier(' + x1 + ', ' + y1 + ', ' + x2 + ', ' + y2 + ')';
+  easingCode.textContent = cb;
+  pgEl.style.setProperty('--fl-timing', cb);
+  updateSnippet();
+}
+
+let dragging = null;
+
+easingSvg.addEventListener('mousedown', e => {
+  const rect = easingSvg.getBoundingClientRect();
+  const mx = e.clientX - rect.left;
+  const my = e.clientY - rect.top;
+  const s1 = scale(p1), s2 = scale(p2);
+  const d1 = Math.hypot(mx - s1.x, my - s1.y);
+  const d2 = Math.hypot(mx - s2.x, my - s2.y);
+  if (d1 < 12) dragging = 'p1';
+  else if (d2 < 12) dragging = 'p2';
+});
+
+easingSvg.addEventListener('mousemove', e => {
+  if (!dragging) return;
+  const rect = easingSvg.getBoundingClientRect();
+  const mx = e.clientX - rect.left;
+  const my = e.clientY - rect.top;
+  const u = unscale(Math.max(10, Math.min(210, mx)), Math.max(10, Math.min(210, my)));
+  if (dragging === 'p1') { p1 = u; }
+  else { p2 = u; }
+  drawCurve();
+});
+
+window.addEventListener('mouseup', () => { dragging = null; });
+
+const easingPresetMap = {
+  '0.25,0.1,0.25,1': 'ease',
+  '0.42,0,1,1': 'ease-in',
+  '0,0,0.58,1': 'ease-out',
+  '0.42,0,0.58,1': 'ease-in-out',
+  '0,0,1,1': 'linear',
+};
+
+easingPresets.addEventListener('click', e => {
+  const btn = e.target.closest('.easing-preset');
+  if (!btn) return;
+  const cb = btn.getAttribute('data-cb');
+  const parts = cb.split(',').map(Number);
+  p1 = { x: parts[0], y: parts[1] };
+  p2 = { x: parts[2], y: parts[3] };
+  easingPresets.querySelectorAll('.easing-preset').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  pgEl.style.removeProperty('--fl-timing');
+  const named = easingPresetMap[cb];
+  if (named) {
+    pgEasing.value = named;
+  } else {
+    const bezier = 'cubic-bezier(' + cb + ')';
+    [...pgEasing.options].forEach(o => { if (o.value === bezier) o.selected = true; });
+  }
+  drawCurve();
+  playAnimation();
+});
+
+drawCurve();
+// ---------- /Easing Visualizer ----------
+
 buildDocsIndex();
-playground();
+sidebarPlay();
 
 toggleOnClick('.callout-showList', 'html', 'animationList-active');
 toggleOnClick('.callout-hideList', 'html', 'animationList-active');
@@ -1355,7 +1674,7 @@ document.querySelectorAll('.copy-icon').forEach(icon => {
   })
 })
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.20.0/prism.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.20.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.20.0/prism.min.js" integrity="sha384-J1zVcG24RV397GbDZ+vC0EEfXnrNy+PnUR0euKtACpK3NSgamm1TFWmidLaSkSdA" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.20.0/plugins/autoloader/prism-autoloader.min.js" integrity="sha384-YcnY1QWKUv0bQ5g1XawiCl+LGg/ruSEjdyoqZXLAj7HWF0qLM6SiFNmUAmSi1O88" crossorigin="anonymous"></script>
   </body>
 </html>

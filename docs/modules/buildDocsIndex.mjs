@@ -2,26 +2,27 @@
   Docs index
 */
 
-const indexItemTemplate = (item = '', id) => `
-  <li class="docs-indexItem"><a href="#${id}" title="${item}">${item}</a></li>
-`
-
 const indexList = (sections = [], container = '.sidebar', heading = 'h2') => {
   const containerEl = document.querySelector(container)
   const list = document.createElement('ul')
+  list.classList.add('docs-index')
 
-  const children = sections.map(section => {
+  sections.forEach(section => {
     const title = section.querySelector(heading)
     const id = section.getAttribute('id')
+    if (!title) return
 
-    return title && indexItemTemplate(title.innerText, id)
+    const li = document.createElement('li')
+    li.classList.add('docs-indexItem')
+    const a = document.createElement('a')
+    a.href = '#' + id
+    a.title = title.innerText
+    a.textContent = title.innerText
+    li.appendChild(a)
+    list.appendChild(li)
   })
 
-  list.classList.add('docs-index')
-  list.innerHTML = children.join('\n')
-
   containerEl.insertAdjacentElement('beforeend', list)
-
   return list
 }
 
