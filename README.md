@@ -8,7 +8,7 @@
 
 <p align="center">
   <strong>Smooth, performant CSS animations</strong><br>
-  by <a href="https://github.com/cognisutra">Cognisutra</a>
+  by <a href="https://cognisutra.in">Cognisutra</a>
 </p>
 
 <p align="center">
@@ -81,4 +81,4 @@ Flux respects the `prefers-reduced-motion` media query — users with motion sen
 
 ## 📄 License
 
-MIT &nbsp;·&nbsp; by **Cognisutra**
+MIT &nbsp;·&nbsp; by <a href="https://cognisutra.in">**Cognisutra**</a>
