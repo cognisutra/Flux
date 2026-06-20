@@ -28,7 +28,7 @@
 **CDN** (via jsDelivr):
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/cognisutra/Flux/docs/animate.min.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/cognisutra/Flux@main/docs/animate.min.css" />
 ```
 
 **npm** (coming soon)
