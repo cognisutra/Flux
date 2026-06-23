@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TIO Yercaud Adventure Packages | Executive & Superior Rooms</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        .gradient-hero {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        }
+        .package-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .package-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+        .meal-option {
+            border-left: 4px solid transparent;
+            transition: all 0.3s ease;
+        }
+        .meal-option:hover {
+            border-left-color: #3b82f6;
+            background-color: #f0f9ff;
+        }
+        .price-highlight {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1e40af;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="font-bold text-lg text-blue-900">🏨 TIO Yercaud | Adventure Packages</div>
+            <button class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition text-sm md:text-base">
+                📞 +91 9995-344-999
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="gradient-hero text-white py-16 md:py-20">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">Yercaud Adventures — Your Way</h1>
+            <p class="text-lg md:text-xl opacity-90 mb-6">Choose your room | Select your meals | Pick your adventure</p>
+            <p class="text-sm opacity-80">Minimum 2 nights | All-inclusive packages with guided safaris, coffee plantations & gourmet meals</p>
+        </div>
+    </section>
+
+    <!-- Meal Plan Legend -->
+    <section class="bg-white py-8 border-b">
+        <div class="max-w-7xl mx-auto px-4">
+            <h2 class="text-2xl font-bold mb-6 text-center">Meal Plan Options</h2>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="p-4 bg-blue-50 rounded-lg border-2 border-blue-200">
+                    <h3 class="font-bold text-blue-900 mb-2">EP (European Plan)</h3>
+                    <p class="text-sm text-gray-700">🛏️ Room only</p>
+                    <p class="text-xs text-gray-600 mt-1">Perfect for self-explorers</p>
+                </div>
+                <div class="p-4 bg-green-50 rounded-lg border-2 border-green-200">
+                    <h3 class="font-bold text-green-900 mb-2">CP (Continental Plan)</h3>
+                    <p class="text-sm text-gray-700">🛏️ Room + 🥐 Breakfast</p>
+                    <p class="text-xs text-gray-600 mt-1">Start your day right</p>
+                </div>
+                <div class="p-4 bg-amber-50 rounded-lg border-2 border-amber-200">
+                    <h3 class="font-bold text-amber-900 mb-2">MAP (Modified American Plan)</h3>
+                    <p class="text-sm text-gray-700">🛏️ Room + 🥐 + 🍽️ Dinner</p>
+                    <p class="text-xs text-gray-600 mt-1">Most popular choice</p>
+                </div>
+                <div class="p-4 bg-purple-50 rounded-lg border-2 border-purple-200">
+                    <h3 class="font-bold text-purple-900 mb-2">AP (American Plan)</h3>
+                    <p class="text-sm text-gray-700">🛏️ + All Meals 🥐🍽️☕</p>
+                    <p class="text-xs text-gray-600 mt-1">Worry-free experience</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- EXECUTIVE ROOM SECTION -->
+    <section class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="mb-12">
+                <h2 class="text-4xl font-bold text-center mb-4">Executive Room Packages</h2>
+                <p class="text-center text-gray-600">₹4,500/night + 5% GST = ₹4,725 per night | Double occupancy | Complimentary breakfast included</p>
+            </div>
+
+            <!-- Executive Room - Meal Plans Overview -->
+            <div class="mb-12">
+                <h3 class="text-2xl font-bold mb-6">Executive Room — Pricing by Meal Plan</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="meal-option p-6 bg-blue-50 rounded-lg border border-blue-200">
+                        <h4 class="font-bold text-blue-900 mb-2">EP</h4>
+                        <p class="text-gray-700 text-sm mb-3">Room only</p>
+                        <div class="price-highlight text-blue-600">₹4,725</div>
+                        <p class="text-xs text-gray-600 mt-1">2 nights per person</p>
+                    </div>
+
+                    <div class="meal-option p-6 bg-green-50 rounded-lg border border-green-200">
+                        <h4 class="font-bold text-green-900 mb-2">CP</h4>
+                        <p class="text-gray-700 text-sm mb-3">Room + Breakfast</p>
+                        <div class="price-highlight text-green-600">₹4,725</div>
+                        <p class="text-xs text-gray-600 mt-1">Breakfast already included</p>
+                    </div>
+
+                    <div class="meal-option p-6 bg-amber-50 rounded-lg border border-amber-200">
+                        <h4 class="font-bold text-amber-900 mb-2">MAP</h4>
+                        <p class="text-gray-700 text-sm mb-3">Room + Breakfast + Dinner</p>
+                        <div class="price-highlight text-amber-600">₹6,775</div>
+                        <p class="text-xs text-gray-600 mt-1">2 nights per person</p>
+                    </div>
+
+                    <div class="meal-option p-6 bg-purple-50 rounded-lg border border-purple-200">
+                        <h4 class="font-bold text-purple-900 mb-2">AP</h4>
+                        <p class="text-gray-700 text-sm mb-3">Room + All Meals</p>
+                        <div class="price-highlight text-purple-600">₹8,575</div>
+                        <p class="text-xs text-gray-600 mt-1">2 nights per person</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Executive Room - Adventure Packages -->
+            <div>
+                <h3 class="text-2xl font-bold mb-8">Choose Your Adventure</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Package 1: Coffee Trail -->
+                    <div class="package-card bg-white rounded-xl shadow-lg overflow-hidden border-t-4 border-amber-500">
+                        <div class="bg-gradient-to-r from-amber-500 to-orange-600 p-6 text-white">
+                            <h4 class="text-2xl font-bold">☕ Coffee Trail Adventure</h4>
+                            <p class="opacity-90 text-sm">Nature & plantations</p>
+                        </div>
+                        <div class="p-6">
+                            <div class="space-y-3 mb-6">
+                                <div class="flex justify-between items-center pb-3 border-b">
+                                    <span class="text-gray-700">EP Base</span>
+                                    <span class="font-bold text-amber-600">₹4,725</span>
+                                </div>
+                                <div class="flex justify-between items-center pb-3 border-b">
+                                    <span class="text-gray-700">CP (+ Breakfast)</span>
+                                    <span class="font-bold text-amber-600">₹4,725</span>
+                                </div>
+                                <div class="flex justify-between items-center pb-3 border-b">
+                                    <span class="text-gray-700">MAP (+ Dinner)</span>
+                                    <span class="font-bold text-amber-600">₹6,775</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-gray-700">AP (All Meals)</span>
+                                    <span class="font-bold text-amber-600">₹8,575</span>
+                                </div>
+                            </div>
+
+                            <div class="bg-amber-50 p-4 rounded-lg mb-4">
+                                <h5 class="font-bold text-amber-900 mb-2 text-sm">Includes:</h5>
+                                <ul class="text-xs text-gray-700 space-y-1">
+                                    <li>✓ Coffee plantation guided tour</li>
+                                    <li>✓ Pagoda Peak jeep safari</li>
+                                    <li>✓ Nature walks & photography</li>
+                                    <li>✓ Complimentary campfire (Sat/20+)</li>
+                                </ul>
+                            </div>
+
+                            <button class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-2 rounded-lg transition text-sm">
+                                Select & Enquire
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Package 2: Highland Heritage -->
+                    <div class="package-card bg-white rounded-xl shadow-lg overflow-hidden border-t-4 border-emerald-500 ring-2 ring-emerald-200">
+                        <div class="bg-gradient-to-r from-emerald-500 to-teal-600 p-6 text-white">
+                            <div class="flex items-start justify-between mb-2">
+                                <div>
+                                    <h4 class="text-2xl font-bold">🏔️ Highland Heritage</h4>
+                                    <p class="opacity-90 text-sm">Best value experience</p>
+                                </div>
+                                <span class="bg-white text-emerald-600 px-3 py-1 rounded-full text-xs font-bold">⭐ POPULAR</span>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <div class="space-y-3 mb-6">
+                                <div class="flex justify-between items-center pb-3 border-b">
+                                    <span class="text-gray-700">EP Base</span>
+                                    <span class="font-bold text-emerald-600">₹4,725</span>
+                                </div>
+                                <div class="flex justify-between items-center pb-3 border-b">
+                                    <span class="text-gray-700">CP (+ Breakfast)</span>
+                                    <span class="font-bold text-emerald-600">₹4,725</span>
+                                </div>
+                                <div class="flex justify-between items-center pb-3 border-b">
+                                    <span class="text-gray-700">MAP (+ Dinner)</span>
+                                    <span class="font-bold text-emerald-600">₹6,775</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-gray-700">AP (All Meals)</span>
+                                    <span class="font-bold text-emerald-600">₹8,575</span>
+                                </div>
+                            </div>
+
+                            <div class="bg-emerald-50 p-4 rounded-lg mb-4">
+                                <h5 class="font-bold text-emerald-900 mb-2 text-sm">Includes:</h5>
+                                <ul class="text-xs text-gray-700 space-y-1">
+                                    <li>✓ Coffee estate + expert guide</li>
+                                    <li>✓ Killiyur Falls excursion</li>
+                                    <li>✓ Pagoda Peak safari</li>
+                                    <li>✓ Village cultural walk</li>
+                                    <li>✓ Campfire experience</li>
+                                </ul>
+                            </div>
+
+                            <button class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 rounded-lg transition text-sm">
+                                Book Now
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Package 3: Luxury Retreat -->
+                    <div class="package-card bg-white rounded-xl shadow-lg overflow-hidden border-t-4 border-purple-500">
+                        <div class="bg-gradient-to-r from-purple-600 to-pink-600 p-6 text-white">
+                            <h4 class="text-2xl font-bold">👑 Luxury Retreat</h4>
+                            <p class="opacity-90 text-sm">Premium all-inclusive</p>
+                        </div>
+                        <div class="p-6">
+                            <div class="space-y-3 mb-6">
+                                <div class="flex justify-between items-center pb-3 border-b">
+                                    <span class="text-gray-700">EP Base</span>
+                                    <span class="font-bold text-purple-600">₹4,725</span>
+                                </div>
+                                <div class="flex justify-between items-center pb-3 border-b">
+                                    <span class="text-gray-700">CP (+ Breakfast)</span>
+                                    <span class="font-bold text-purple-600">₹4,725</span>
+                                </div>
+                                <div class="flex justify-between items-center pb-3 border-b">
+                                    <span class="text-gray-700">MAP (+ Dinner)</span>
+                                    <span class="font-bold text-purple-600">₹6,775</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-gray-700">AP (All Meals)</span>
+                                    <span class="font-bold text-purple-600">₹8,575</span>
+                                </div>
+                            </div>
+
+                            <div class="bg-purple-50 p-4 rounded-lg mb-4">
+                                <h5 class="font-bold text-purple-900 mb-2 text-sm">Includes:</h5>
+                                <ul class="text-xs text-gray-700 space-y-1">
+                                    <li>✓ Private expert guide</li>
+                                    <li>✓ Dual jeep safaris (day & sunset)</li>
+                                    <li>✓ Falls & adventure activities</li>
+                                    <li>✓ Bird watching tours</li>
+                                    <li>✓ Photography sessions</li>
+                                    <li>✓ Bonfire with entertainment</li>
+                                </ul>
+                            </div>
+
+                            <button class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 rounded-lg transition text-sm">
+                                Enquire Premium
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SUPERIOR ROOM SECTION -->
+    <section class="py-16 bg-gray-100">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="mb-12">
+                <h2 class="text-4xl font-bold text-center mb-4">Superior Room Packages</h2>
+                <p class="text-center text-gray-600">₹5,500/night + 5% GST = ₹5,775 per night | Double occupancy | Complimentary breakfast included</p>
+            </div>
+
+            <!-- Superior Room - Meal Plans Overview -->
+            <div class="mb-12">
+                <h3 class="text-2xl font-bold mb-6">Superior Room — Pricing by Meal Plan</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="meal-option p-6 bg-blue-50 rounded-lg border border-blue-200">
+                        <h4 class="font-bold text-blue-900 mb-2">EP</h4>
+                        <p class="text-gray-700 text-sm mb-3">Room only</p>
+                        <div class="price-highlight text-blue-600">₹5,775</div>
+                        <p class="text-xs text-gray-600 mt-1">2 nights per person</p>
+                    </div>
+
+                    <div class="meal-option p-6 bg-green-50 rounded-lg border border-green-200">
+                        <h4 class="font-bold text-green-900 mb-2">CP</h4>
+                        <p class="text-gray-700 text-sm mb-3">Room + Breakfast</p>
+                        <div class="price-highlight text-green-600">₹5,775</div>
+                        <p class="text-xs text-gray-600 mt-1">Breakfast already included</p>
+                    </div>
+
+                    <div class="meal-option p-6 bg-amber-50 rounded-lg border border-amber-200">
+                        <h4 class="font-bold text-amber-900 mb-2">MAP</h4>
+                        <p class="text-gray-700 text-sm mb-3">Room + Breakfast + Dinner</p>
+                        <div class="price-highlight text-amber-600">₹7,825</div>
+                        <p class="text-xs text-gray-600 mt-1">2 nights per person</p>
+                    </div>
+
+                    <div class="meal-option p-6 bg-purple-50 rounded-lg border border-purple-200">
+                        <h4 class="font-bold text-purple-900 mb-2">AP</h4>
+                        <p class="text-gray-700 text-sm mb-3">Room + All Meals</p>
+                        <div class="price-highlight text-purple-600">₹9,625</div>
+                        <p class="text-xs text-gray-600 mt-1">2 nights per person</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Superior Room - Adventure Packages -->
+            <div>
+                <h3 class="text-2xl font-bold mb-8">Choose Your Adventure</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Package 1: Coffee Trail -->
+                    <div class="package-card bg-white rounded-xl shadow-lg overflow-hidden border-t-4 border-amber-500">
+                        <div class="bg-gradient-to-r from-amber-500 to-orange-600 p-6 text-white">
+                            <h4 class="text-2xl font-bold">☕ Coffee Trail Adventure</h4>
+                            <p class="opacity-90 text-sm">Nature & plantations</p>
+                        </div>
+                        <div class="p-6">
+                            <div class="space-y-3 mb-6">
+                                <div class="flex justify-between items-center pb-3 border-b">
+                                    <span class="text-gray-700">EP Base</span>
+                                    <span class="font-bold text-amber-600">₹5,775</span>
+                                </div>
+                                <div class="flex justify-between items-center pb-3 border-b">
+                                    <span class="text-gray-700">CP (+ Breakfast)</span>
+                                    <span class="font-bold text-amber-600">₹5,775</span>
+                                </div>
+                                <div class="flex justify-between items-center pb-3 border-b">
+                                    <span class="text-gray-700">MAP (+ Dinner)</span>
+                                    <span class="font-bold text-amber-600">₹7,825</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-gray-700">AP (All Meals)</span>
+                                    <span class="font-bold text-amber-600">₹9,625</span>
+                                </div>
+                            </div>
+
+                            <div class="bg-amber-50 p-4 rounded-lg mb-4">
+                                <h5 class="font-bold text-amber-900 mb-2 text-sm">Includes:</h5>
+                                <ul class="text-xs text-gray-700 space-y-1">
+                                    <li>✓ Coffee plantation guided tour</li>
+                                    <li>✓ Pagoda Peak jeep safari</li>
+                                    <li>✓ Nature walks & photography</li>
+                                    <li>✓ Complimentary campfire (Sat/20+)</li>
+                                </ul>
+                            </div>
+
+                            <button class="w-full bg-amber-500 hover:bg-amber-600 text-white font-bold py-2 rounded-lg transition text-sm">
+                                Select & Enquire
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Package 2: Highland Heritage -->
+                    <div class="package-card bg-white rounded-xl shadow-lg overflow-hidden border-t-4 border-emerald-500 ring-2 ring-emerald-200">
+                        <div class="bg-gradient-to-r from-emerald-500 to-teal-600 p-6 text-white">
+                            <div class="flex items-start justify-between mb-2">
+                                <div>
+                                    <h4 class="text-2xl font-bold">🏔️ Highland Heritage</h4>
+                                    <p class="opacity-90 text-sm">Best value experience</p>
+                                </div>
+                                <span class="bg-white text-emerald-600 px-3 py-1 rounded-full text-xs font-bold">⭐ POPULAR</span>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <div class="space-y-3 mb-6">
+                                <div class="flex justify-between items-center pb-3 border-b">
+                                    <span class="text-gray-700">EP Base</span>
+                                    <span class="font-bold text-emerald-600">₹5,775</span>
+                                </div>
+                                <div class="flex justify-between items-center pb-3 border-b">
+                                    <span class="text-gray-700">CP (+ Breakfast)</span>
+                                    <span class="font-bold text-emerald-600">₹5,775</span>
+                                </div>
+                                <div class="flex justify-between items-center pb-3 border-b">
+                                    <span class="text-gray-700">MAP (+ Dinner)</span>
+                                    <span class="font-bold text-emerald-600">₹7,825</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-gray-700">AP (All Meals)</span>
+                                    <span class="font-bold text-emerald-600">₹9,625</span>
+                                </div>
+                            </div>
+
+                            <div class="bg-emerald-50 p-4 rounded-lg mb-4">
+                                <h5 class="font-bold text-emerald-900 mb-2 text-sm">Includes:</h5>
+                                <ul class="text-xs text-gray-700 space-y-1">
+                                    <li>✓ Coffee estate + expert guide</li>
+                                    <li>✓ Killiyur Falls excursion</li>
+                                    <li>✓ Pagoda Peak safari</li>
+                                    <li>✓ Village cultural walk</li>
+                                    <li>✓ Campfire experience</li>
+                                </ul>
+                            </div>
+
+                            <button class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-2 rounded-lg transition text-sm">
+                                Book Now
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Package 3: Luxury Retreat -->
+                    <div class="package-card bg-white rounded-xl shadow-lg overflow-hidden border-t-4 border-purple-500">
+                        <div class="bg-gradient-to-r from-purple-600 to-pink-600 p-6 text-white">
+                            <h4 class="text-2xl font-bold">👑 Luxury Retreat</h4>
+                            <p class="opacity-90 text-sm">Premium all-inclusive</p>
+                        </div>
+                        <div class="p-6">
+                            <div class="space-y-3 mb-6">
+                                <div class="flex justify-between items-center pb-3 border-b">
+                                    <span class="text-gray-700">EP Base</span>
+                                    <span class="font-bold text-purple-600">₹5,775</span>
+                                </div>
+                                <div class="flex justify-between items-center pb-3 border-b">
+                                    <span class="text-gray-700">CP (+ Breakfast)</span>
+                                    <span class="font-bold text-purple-600">₹5,775</span>
+                                </div>
+                                <div class="flex justify-between items-center pb-3 border-b">
+                                    <span class="text-gray-700">MAP (+ Dinner)</span>
+                                    <span class="font-bold text-purple-600">₹7,825</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-gray-700">AP (All Meals)</span>
+                                    <span class="font-bold text-purple-600">₹9,625</span>
+                                </div>
+                            </div>
+
+                            <div class="bg-purple-50 p-4 rounded-lg mb-4">
+                                <h5 class="font-bold text-purple-900 mb-2 text-sm">Includes:</h5>
+                                <ul class="text-xs text-gray-700 space-y-1">
+                                    <li>✓ Private expert guide</li>
+                                    <li>✓ Dual jeep safaris (day & sunset)</li>
+                                    <li>✓ Falls & adventure activities</li>
+                                    <li>✓ Bird watching tours</li>
+                                    <li>✓ Photography sessions</li>
+                                    <li>✓ Bonfire with entertainment</li>
+                                </ul>
+                            </div>
+
+                            <button class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 rounded-lg transition text-sm">
+                                Enquire Premium
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Meal Plan Breakdown -->
+    <section class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4">
+            <h2 class="text-4xl font-bold text-center mb-12">Meal Plan Breakdown (2 Nights / 3 Days per person)</h2>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full border-collapse">
+                    <thead>
+                        <tr class="bg-blue-900 text-white">
+                            <th class="border border-gray-300 p-4 text-left">Meal Plan</th>
+                            <th class="border border-gray-300 p-4 text-center">Breakfast</th>
+                            <th class="border border-gray-300 p-4 text-center">Lunch</th>
+                            <th class="border border-gray-300 p-4 text-center">Dinner</th>
+                            <th class="border border-gray-300 p-4 text-center">Tea & Snacks</th>
+                            <th class="border border-gray-300 p-4 text-right">Meal Cost</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-sm">
+                        <tr class="bg-blue-50">
+                            <td class="border border-gray-300 p-4 font-bold">EP (Room Only)</td>
+                            <td class="border border-gray-300 p-4 text-center">❌</td>
+                            <td class="border border-gray-300 p-4 text-center">❌</td>
+                            <td class="border border-gray-300 p-4 text-center">❌</td>
+                            <td class="border border-gray-300 p-4 text-center">❌</td>
+                            <td class="border border-gray-300 p-4 text-right font-bold">₹0</td>
+                        </tr>
+                        <tr class="bg-green-50">
+                            <td class="border border-gray-300 p-4 font-bold">CP (Continental)</td>
+                            <td class="border border-gray-300 p-4 text-center">✓ Free</td>
+                            <td class="border border-gray-300 p-4 text-center">❌</td>
+                            <td class="border border-gray-300 p-4 text-center">❌</td>
+                            <td class="border border-gray-300 p-4 text-center">❌</td>
+                            <td class="border border-gray-300 p-4 text-right font-bold">₹0</td>
+                        </tr>
+                        <tr class="bg-amber-50">
+                            <td class="border border-gray-300 p-4 font-bold">MAP (Modified American)</td>
+                            <td class="border border-gray-300 p-4 text-center">✓ Free</td>
+                            <td class="border border-gray-300 p-4 text-center">❌</td>
+                            <td class="border border-gray-300 p-4 text-center">✓ 950 × 2</td>
+                            <td class="border border-gray-300 p-4 text-center">✓ 75 × 2</td>
+                            <td class="border border-gray-300 p-4 text-right font-bold">₹2,050</td>
+                        </tr>
+                        <tr class="bg-purple-50">
+                            <td class="border border-gray-300 p-4 font-bold">AP (American Plan)</td>
+                            <td class="border border-gray-300 p-4 text-center">✓ Free</td>
+                            <td class="border border-gray-300 p-4 text-center">✓ 900 × 2</td>
+                            <td class="border border-gray-300 p-4 text-center">✓ 950 × 2</td>
+                            <td class="border border-gray-300 p-4 text-center">✓ 75 × 2</td>
+                            <td class="border border-gray-300 p-4 text-right font-bold">₹3,850</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-8 p-6 bg-blue-50 rounded-lg border border-blue-200">
+                <p class="text-gray-700"><strong>Note:</strong> Breakfast is complimentary with all room rates. Lunch & Dinner are non-vegetarian specialties. Tea/Coffee available morning & evening. Campfire is complimentary on Saturdays or when booking is 20+ guests.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Complete Itinerary -->
+    <section class="py-16 bg-gray-100">
+        <div class="max-w-7xl mx-auto px-4">
+            <h2 class="text-4xl font-bold text-center mb-12">Complete 2N/3D Itinerary</h2>
+            
+            <div class="space-y-6">
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h3 class="text-2xl font-bold text-blue-900 mb-4">Day 1: Arrival & Coffee Heritage</h3>
+                    <ul class="space-y-2 text-gray-700">
+                        <li>✓ Check-in at TIO Yercaud</li>
+                        <li>✓ Welcome refreshment (complimentary)</li>
+                        <li>✓ Lunch at hotel</li>
+                        <li>✓ Coffee Plantation Tour — Walk through lush estates, learn cultivation, taste fresh coffee</li>
+                        <li>✓ Evening Tea on plantation with hill views</li>
+                        <li>✓ Dinner with local delicacies</li>
+                        <li>✓ Campfire (Saturday or 20+ guests) — Music, stories, warmth under stars</li>
+                    </ul>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h3 class="text-2xl font-bold text-green-900 mb-4">Day 2: Adventure & Exploration</h3>
+                    <ul class="space-y-2 text-gray-700">
+                        <li>✓ Early Breakfast at 7:30 AM</li>
+                        <li>✓ Morning Jeep Safari — Pagoda Peak, sericulture farms, hidden trails</li>
+                        <li>✓ Photography & Nature Walks</li>
+                        <li>✓ Lunch at hotel</li>
+                        <li>✓ Falls Adventure (Highland Heritage & Luxury packages) — Killiyur Falls, swimming</li>
+                        <li>✓ Evening Tea with snacks</li>
+                        <li>✓ Dinner & Bonfire Experience</li>
+                    </ul>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h3 class="text-2xl font-bold text-orange-900 mb-4">Day 3: Local Culture & Departure</h3>
+                    <ul class="space-y-2 text-gray-700">
+                        <li>✓ Breakfast (complimentary)</li>
+                        <li>✓ Village Cultural Walk (Highland Heritage & Luxury) — Meet locals, explore markets</li>
+                        <li>✓ Lunch at hotel</li>
+                        <li>✓ Leisure Time — Relax, explore favorite spots</li>
+                        <li>✓ Check-out by 6:00 PM with memories & new friendships</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="gradient-hero text-white py-16">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <h2 class="text-4xl font-bold mb-6">Ready to Explore Yercaud?</h2>
+            <p class="text-xl mb-8">Choose your room • Select your meals • Pick your adventure</p>
+            
+            <div class="flex flex-col md:flex-row gap-4 justify-center">
+                <button class="bg-white text-blue-600 px-8 py-4 font-bold rounded-lg hover:bg-gray-100 transition">
+                    📞 Call: +91 9995-344-999
+                </button>
+                <button class="border-2 border-white text-white px-8 py-4 font-bold rounded-lg hover:bg-white hover:text-blue-600 transition">
+                    💬 WhatsApp Booking
+                </button>
+            </div>
+            <p class="mt-6 opacity-80 text-sm">Instant confirmation | Flexible cancellation | Best rate guarantee</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-300 py-8">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                <div>
+                    <h4 class="font-bold text-white mb-4">TIO Yercaud</h4>
+                    <p class="text-sm">The Indian Original Hotels & Resorts</p>
+                    <p class="text-sm mt-2">Yercaud, Tamil Nadu 636601</p>
+                </div>
+                <div>
+                    <h4 class="font-bold text-white mb-4">Room Options</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li>Executive Room (₹4,500 + 5% tax)</li>
+                        <li>Superior Room (₹5,500 + 5% tax)</li>
+                        <li>All with complimentary breakfast</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-white mb-4">Contact</h4>
+                    <p class="text-sm">📞 +91 9995-344-999</p>
+                    <p class="text-sm">📧 info@tioyercaud.com</p>
+                    <p class="text-sm">💬 WhatsApp Available</p>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 pt-6 text-center text-sm">
+                <p>&copy; 2026 TIO Yercaud. Minimum 2 nights booking | Flexible dates | Group discounts available</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
